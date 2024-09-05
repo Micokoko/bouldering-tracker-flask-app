@@ -80,7 +80,7 @@ def login():
         flash(error)
         return redirect(url_for('index'))# Flash error message if login fails
 
-    return render_template('auth/user_page.html')
+    return render_template('climber/user_page.html')
 
 
 @bp.before_app_request
@@ -111,7 +111,7 @@ def login_required(view):
 @bp.route('/user_page')
 @login_required
 def user_page():
-    return render_template('auth/user_page.html')
+    return render_template('climber/user_page.html')
 
 
 @bp.route('/admin')
