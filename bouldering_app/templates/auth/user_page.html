@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>Welcome, {{ g.user['username'] }}</h1>
+{% endblock %}
+
+{% block content %}
+<section class="content">
+  <header>
+    <!-- Optional additional header content -->
+  </header>
+  
+  
+  <p>Your profile page is under construction.</p>
+  <!-- Add more user-specific content here -->
+  <a href="{{ url_for('auth.logout') }}" class="btn btn-secondary">Log Out</a>
+</section>
+{% endblock %}
