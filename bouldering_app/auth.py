@@ -63,14 +63,18 @@ def login():
             'SELECT * FROM user WHERE username = ?', (username,)
         ).fetchone()
 
+        
+
         if user is None:
-            error = 'Incorrect username.'
+            error = 'Username or password cannot be found'
         elif not check_password_hash(user['password'], password):
-            error = 'Incorrect password.'
+            error = 'Username or password cannot be found'
 
         if error is None:
             session.clear()
             session['user_id'] = user['id']
+            if user['username'] == 'admin':
+                return redirect(url_for('auth.admin'))
             return redirect(url_for('auth.user_page'))  # Redirect to user_page on successful login
 
         flash(error)
@@ -108,3 +112,9 @@ def login_required(view):
 @login_required
 def user_page():
     return render_template('auth/user_page.html')
+
+
+@bp.route('/admin')
+@login_required
+def admin():
+    return render_template('route_setter/admin.html')
