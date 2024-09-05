@@ -1,35 +1,58 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %}Register{% endblock %}</h1>
+<!-- Center the card in the viewport -->
+<div class="card mx-auto my-5" style="width: 50%;">
+  <div class="card-body text-center">
+    <h1>{% block title %}Register{% endblock %}</h1>
+  </div>
+</div>
 {% endblock %}
 
 {% block content %}
-  <form method="post">
-    <label for="username">Username</label>
-    <input name="username" id="username" required>
+<div class="d-flex justify-content-center">
+  <!-- Add a container to center the form within the card -->
+  <div class="card p-4" style="width: 100%; max-width: 500px;">
+    <form method="post">
+      <div class="mb-3">
+        <label for="username" class="form-label">Username</label>
+        <input name="username" id="username" class="form-control" required>
+      </div>
 
-    <label for="password">Password</label>
-    <input type="password" name="password" id="password" required>
+      <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <input type="password" name="password" id="password" class="form-control" required>
+      </div>
 
+      <div class="mb-3">
+        <label for="firstname" class="form-label">First Name</label>
+        <input name="firstname" id="firstname" class="form-control" required>
+      </div>
 
+      <div class="mb-3">
+        <label for="lastname" class="form-label">Last Name</label>
+        <input name="lastname" id="lastname" class="form-control" required>
+      </div>
 
-    <label for="firstname">First Name</label>
-    <input name="firstname" id="firstname" required>
+      <div class="mb-3">
+        <label for="email" class="form-label">Email address</label>
+        <input name="email" id="email" class="form-control" required>
+      </div>
 
-    <label for="lastname">Last Name</label>
-    <input name="lastname" id="lastname" required>
+      <div class="mb-3">
+        <label for="gender" class="form-label">Gender</label>
+        <input name="gender" id="gender" class="form-control" required>
+      </div>
 
-    <label for="email">Email address</label>
-    <input name="email" id="email" required>
+      <div class="mb-3">
+        <label for="age" class="form-label">Age</label>
+        <input name="age" id="age" class="form-control" required>
+      </div>
 
-    <label for="gender">Gender</label>
-    <input name="gender" id="gender" required>
-
-    <label for="age">Age</label>
-    <input name="age" id="age" required>
-
-    <input type="submit" value="Register">
-  </form>
-  
+      <div class="text-center">
+        <input type="submit" value="Register" class="btn btn-primary">
+      </div>
+    </form>
+  </div>
+</div>
 {% endblock %}
