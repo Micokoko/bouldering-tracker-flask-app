@@ -8,7 +8,33 @@
   </header>
   
   <p>Your profile page is under construction.</p>
-  <!-- Add more user-specific content here -->
+  <h1>All Boulders</h1>
+
+    {% if boulders %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Color</th>
+                    <th>Difficulty</th>
+                    <th>Number of Moves</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for boulder in boulders %}
+                <tr>
+                    <td>{{ boulder.name }}</td>
+                    <td style="background-color: {{ boulder.color }};"></td>
+                    <td>  V{{ boulder.difficulty }}</td>
+                    <td>{{ boulder.numberofmoves }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No boulders found.</p>
+    {% endif %}
+
   <a href="{{ url_for('auth.logout') }}" class="btn btn-secondary">Log Out</a>
 </section>
 {% endblock %}

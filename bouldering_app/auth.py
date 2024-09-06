@@ -111,11 +111,15 @@ def login_required(view):
 @bp.route('/user_page')
 @login_required
 def user_page():
-    return render_template('climber/user_page.html')
+    db = get_db()
+    boulders = db.execute('SELECT * FROM boulder').fetchall()
+    return render_template('climber/user_page.html', boulders=boulders)
 
 
 @bp.route('/route_setter')
 @login_required
 def admin():
-    return render_template('route_setter/admin.html')
+    db = get_db()
+    boulders = db.execute('SELECT * FROM boulder').fetchall()
+    return render_template('route_setter/admin.html', boulders=boulders)
 
