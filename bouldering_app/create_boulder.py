@@ -4,11 +4,11 @@ from flask import (
 from bouldering_app.db import get_db
 from .auth import login_required  
 
-bp = Blueprint('boulder', __name__, url_prefix='/route_setter')
+bp = Blueprint('create_boulder', __name__, url_prefix='/route_setter')
 
-@bp.route('/boulders', methods=('GET', 'POST'))
+@bp.route('/add_boulder', methods=('GET', 'POST'))
 @login_required  
-def create_boulder():
+def create_boulder_form():
     if g.user['username'] != 'admin':  
         flash("You do not have access to this page.")
         return redirect(url_for('auth.user_page'))  
@@ -43,7 +43,7 @@ def create_boulder():
         
         flash(error)
     
-    return render_template('route_setter/boulders.html')
+    return render_template('route_setter/add_boulder.html')
 
 @bp.route('/route_setter')
 @login_required  

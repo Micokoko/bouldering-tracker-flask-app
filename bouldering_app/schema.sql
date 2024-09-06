@@ -15,6 +15,6 @@ CREATE TABLE boulder (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
     color TEXT NOT NULL,
-    difficulty TEXT NOT NULL,
+    difficulty INTEGER NOT NULL,
     numberofmoves INTEGER NOT NULL
 );

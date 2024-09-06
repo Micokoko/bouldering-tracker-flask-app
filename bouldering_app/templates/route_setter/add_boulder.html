@@ -4,5 +4,27 @@
 
 {% block content %}
     <h1>add boulder here</h1>
+
+    <form class="mt-15" style="margin-top: 20px" method="post" action="{{ url_for('create_boulder.create_boulder_form') }}">
+        <div class="form-group">
+            <label for="name">name</label>
+            <input type="text" name="name" id="name" class="form-control" placeholder="Name the boulder" required>
+        </div>
+
+        <div class="form-group">
+            <label for="color">Color</label>
+            <input type="color" name="color" id="color" class="form-control" placeholder="Set color" required>
+        </div>
+        <div class="form-group">
+            <label for="difficulty">Difficulty (V scale)</label>
+            <input type="number" name="difficulty" id="difficulty" class="form-control" placeholder="Set difficulty" required pattern="\d{1,2}">
+        </div>
+        <div class="form-group">
+            <label for="numberofmoves">Moves</label>
+            <input type="number" name="numberofmoves" id="numberofmoves" class="form-control" placeholder="Set number of moves" required pattern="\d{1,2}">
+        </div>
+
+        <button type="submit" class="btn btn-primary">Post</button>
+    </form>
 {% endblock  %}
     
