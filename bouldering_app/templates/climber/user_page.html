@@ -30,7 +30,7 @@
                     <td>  V{{ boulder.difficulty }}</td>
                     <td>{{ boulder.numberofmoves }}</td>
                     <td>Complete or Incomplete</td>
-                    <td><a  class="btn btn-warning" href="">Log</a></td>
+                    <td><a  class="btn btn-warning" href="{{ url_for('log_ascent.log_ascent_user') }}">Log</a></td>
                 </tr>
                 {% endfor %}
             </tbody>
