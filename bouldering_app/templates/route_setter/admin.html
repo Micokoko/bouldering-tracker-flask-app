@@ -18,9 +18,10 @@
             <thead>
                 <tr>
                     <th>Name</th>
-                    <th>Color</th>
+                    <th>Color of holds</th>
                     <th>Difficulty</th>
                     <th>Number of Moves</th>
+                    <th>Edit</th>
                 </tr>
             </thead>
             <tbody>
@@ -30,6 +31,13 @@
                     <td style="background-color: {{ boulder.color }};"></td>
                     <td>V{{ boulder.difficulty }}</td>
                     <td>{{ boulder.numberofmoves }}</td>
+                    <td>
+                        <a  class="btn btn-warning" href="{{ url_for('create_boulder.update_boulder_form', id=boulder.id) }}">Update</a>
+                        <br>
+                        <form action="{{ url_for('create_boulder.delete_boulder', id=boulder.id) }}" method="post">
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>                        
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
