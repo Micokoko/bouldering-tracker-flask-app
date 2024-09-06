@@ -18,6 +18,8 @@
                     <th>Color of holds</th>
                     <th>Difficulty</th>
                     <th>Number of Moves</th>
+                    <th>Status</th>
+                    <th>Log Acent</th>
                 </tr>
             </thead>
             <tbody>
@@ -27,6 +29,8 @@
                     <td style="background-color: {{ boulder.color }};"></td>
                     <td>  V{{ boulder.difficulty }}</td>
                     <td>{{ boulder.numberofmoves }}</td>
+                    <td>Complete or Incomplete</td>
+                    <td><a  class="btn btn-warning" href="">Log</a></td>
                 </tr>
                 {% endfor %}
             </tbody>
