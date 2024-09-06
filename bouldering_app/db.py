@@ -23,6 +23,7 @@ def init_db():
     db.executescript('''
         DROP TABLE IF EXISTS user;
         DROP TABLE IF EXISTS boulder;
+        DROP TABLE IF EXISTS ATTEMPT
     ''')
     # Create new tables
     with current_app.open_resource('schema.sql') as f:

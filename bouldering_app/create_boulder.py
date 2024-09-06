@@ -1,8 +1,9 @@
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, session, url_for
+    Blueprint, flash, g, redirect, render_template, request, url_for
 )
 from bouldering_app.db import get_db
 from .auth import login_required
+from datetime import datetime
 
 bp = Blueprint('create_boulder', __name__, url_prefix='/route_setter')
 
@@ -18,6 +19,7 @@ def create_boulder_form():
         color = request.form['color']
         difficulty = request.form['difficulty']
         numberofmoves = request.form['numberofmoves']
+        set_date = request.form.get('set_date')  
         db = get_db()
         error = None
 
@@ -29,12 +31,16 @@ def create_boulder_form():
             error = 'Difficulty is required.'
         elif not numberofmoves:
             error = 'Number of moves is required.'
+        elif not set_date:
+            error = 'Set date is required.'
 
         if error is None:
             try:
+                # Ensure set_date is in the correct format
+                set_date = datetime.strptime(set_date, '%Y-%m-%d').date()
                 db.execute(
-                    "INSERT INTO boulder (name, color, difficulty, numberofmoves) VALUES (?, ?, ?, ?)",
-                    (name, color, difficulty, numberofmoves),
+                    "INSERT INTO boulder (name, color, difficulty, numberofmoves, set_date) VALUES (?, ?, ?, ?, ?)",
+                    (name, color, difficulty, numberofmoves, set_date),
                 )
                 db.commit()
                 return redirect(url_for('create_boulder.admin'))
@@ -44,8 +50,6 @@ def create_boulder_form():
         flash(error)
 
     return render_template('route_setter/add_boulder.html')
-
-
 
 @bp.route('/<int:id>/update', methods=('GET', 'POST'))
 @login_required
@@ -62,6 +66,7 @@ def update_boulder_form(id):
         color = request.form['color']
         difficulty = request.form['difficulty']
         numberofmoves = request.form['numberofmoves']
+        set_date = request.form.get('set_date')
         error = None
 
         if not name:
@@ -72,12 +77,16 @@ def update_boulder_form(id):
             error = 'Difficulty is required.'
         elif not numberofmoves:
             error = 'Number of moves is required.'
+        elif not set_date:
+            error = 'Set date is required.'
 
         if error is None:
             try:
+                # Ensure set_date is in the correct format
+                set_date = datetime.strptime(set_date, '%Y-%m-%d').date()
                 db.execute(
-                    "UPDATE boulder SET name = ?, color = ?, difficulty = ?, numberofmoves = ? WHERE id = ?",
-                    (name, color, difficulty, numberofmoves, id),
+                    "UPDATE boulder SET name = ?, color = ?, difficulty = ?, numberofmoves = ?, set_date = ? WHERE id = ?",
+                    (name, color, difficulty, numberofmoves, set_date, id),
                 )
                 db.commit()
                 return redirect(url_for('create_boulder.admin'))
@@ -107,9 +116,6 @@ def delete_boulder(id):
     flash('Boulder deleted successfully.')
     return redirect(url_for('create_boulder.admin'))
 
-
-
-
 @bp.route('/admin')
 @login_required
 def admin():
@@ -120,9 +126,6 @@ def admin():
     db = get_db()
     boulders = db.execute('SELECT * FROM boulder').fetchall()
     return render_template('route_setter/admin.html', boulders=boulders)
-
-
-
 
 @bp.route('/add_boulder_page')
 @login_required

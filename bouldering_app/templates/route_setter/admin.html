@@ -17,16 +17,19 @@
         <table>
             <thead>
                 <tr>
+                    <th>Set Date</th>
                     <th>Name</th>
                     <th>Color of holds</th>
                     <th>Difficulty</th>
                     <th>Number of Moves</th>
                     <th>Edit</th>
+                    
                 </tr>
             </thead>
             <tbody>
                 {% for boulder in boulders %}
                 <tr>
+                    <td>{{ boulder.set_date}}</td>
                     <td>{{ boulder.name }}</td>
                     <td style="background-color: {{ boulder.color }};"></td>
                     <td>V{{ boulder.difficulty }}</td>

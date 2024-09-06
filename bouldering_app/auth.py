@@ -42,7 +42,7 @@ def register():
                     (username, generate_password_hash(password), firstname, lastname, email, gender, age),
                 )
                 db.commit()
-                return redirect(url_for('auth.login'))
+                return redirect(url_for('index'))
             except db.IntegrityError:
                 error = f"User {username} is already registered."
         
