@@ -114,7 +114,8 @@ def user_page():
     return render_template('climber/user_page.html')
 
 
-@bp.route('/admin')
+@bp.route('/route_setter')
 @login_required
 def admin():
     return render_template('route_setter/admin.html')
+

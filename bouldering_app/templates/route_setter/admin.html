@@ -10,7 +10,7 @@
     
 
     <p>Your profile page is under construction.</p>
-    <!-- Add more user-specific content here -->
+    <a href="{{ url_for('boulder.add_boulder_route') }}" class="btn btn-secondary">ADD BOULDER</a>
     <a href="{{ url_for('auth.logout') }}" class="btn btn-secondary">Log Out</a>
 </section>
 {% endblock %}
