@@ -85,3 +85,5 @@ def log_ascent_user(id):
             print(f"DEBUG: Unexpected Error: {e}")
 
     return render_template('climber/log_ascent.html', boulder=boulder, attempt=attempt)
+
+

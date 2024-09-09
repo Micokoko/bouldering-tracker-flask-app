@@ -22,7 +22,7 @@ def close_db(e=None):
 
 def init_db():
     db = get_db()
- 
+
     db.executescript('''
         DROP TABLE IF EXISTS user;
         DROP TABLE IF EXISTS boulder;

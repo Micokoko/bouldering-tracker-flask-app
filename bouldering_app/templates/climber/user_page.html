@@ -9,16 +9,30 @@
     <h1>All Boulders</h1>
 
     {% if boulders %}
-        <table class="table table-striped table-bordered">
+        <table class="table table-striped table-bordered" id="boulderTable">
             <thead>
                 <tr>
-                    <th class="text-center">Name</th>
-                    <th class="text-center">Color of Holds</th>
-                    <th class="text-center">Difficulty</th>
-                    <th class="text-center">Number of Moves</th>
-                    <th class="text-center">Attempts</th>
-                    <th class="text-center">Status</th> <!-- Add new column for displaying moves completed and status -->
-                    <th class="text-center">Attempt Date</th>
+                    <th class="text-center" data-column="name">
+                        <a href="#" onclick="sortTable('name')">Name</a>
+                    </th>
+                    <th class="text-center" data-column="color">
+                        <a href="#" onclick="sortTable('color')">Color of Holds</a>
+                    </th>
+                    <th class="text-center" data-column="difficulty">
+                        <a href="#" onclick="sortTable('difficulty')">Difficulty</a>
+                    </th>
+                    <th class="text-center" data-column="numberofmoves">
+                        <a href="#" onclick="sortTable('numberofmoves')">Number of Moves</a>
+                    </th>
+                    <th class="text-center" data-column="number_of_attempts">
+                        <a href="#" onclick="sortTable('number_of_attempts')">Attempts</a>
+                    </th>
+                    <th class="text-center" data-column="status">
+                        <a href="#" onclick="sortTable('status')">Status</a>
+                    </th>
+                    <th class="text-center" data-column="attempt_date">
+                        <a href="#" onclick="sortTable('attempt_date')">Attempt Date</a>
+                    </th>
                     <th class="text-center">Log Ascent</th>
                 </tr>
             </thead>
@@ -40,7 +54,6 @@
                     {% if attempts_for_boulder %}
                         {% set attempt = attempts_for_boulder[0] %}
                         <td>{{ attempt.number_of_attempts }}</td>
-                        <!-- Updated logic to display status and moves completed -->
                         <td>
                             {% if attempt.status == 'flashed' %}
                                 Flashed
@@ -68,4 +81,65 @@
 
     <a href="{{ url_for('auth.logout') }}" class="btn btn-secondary">Log Out</a>
 </section>
+
+<script>
+    let sortOrder = {};
+
+    function sortTable(column) {
+        const table = document.getElementById('boulderTable');
+        const tbody = table.querySelector('tbody');
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+        const columnIndex = Array.from(table.querySelectorAll('th')).findIndex(th => th.dataset.column === column);
+        const isAscending = sortOrder[column] === 'asc' ? true : false;
+
+        const sortedRows = rows.sort((rowA, rowB) => {
+            const cellA = rowA.children[columnIndex].textContent.trim();
+            const cellB = rowB.children[columnIndex].textContent.trim();
+
+            if (column === 'attempt_date') {
+                const dateA = new Date(cellA);
+                const dateB = new Date(cellB);
+                return isAscending ? dateA - dateB : dateB - dateA;
+            }
+
+            if (column === 'status') {
+                const statusOrder = { 'flashed': 1, 'completed': 2, 'incomplete': 3 };
+                const statusA = statusOrder[cellA.toLowerCase()] || 4;
+                const statusB = statusOrder[cellB.toLowerCase()] || 4;
+
+                // For 'incomplete', sort by the percentage of moves completed
+                if (statusA === 3 && statusB === 3) {
+                    const movesCompletedA = parseInt(rowA.children[6].textContent.split(' ')[1] || 0, 10);
+                    const movesCompletedB = parseInt(rowB.children[6].textContent.split(' ')[1] || 0, 10);
+                    const totalMovesA = parseInt(rowA.children[4].textContent, 10);
+                    const totalMovesB = parseInt(rowB.children[4].textContent, 10);
+                    const percentA = (movesCompletedA / totalMovesA) * 100;
+                    const percentB = (movesCompletedB / totalMovesB) * 100;
+                    return isAscending ? percentA - percentB : percentB - percentA;
+                }
+
+                return isAscending ? statusA - statusB : statusB - statusA;
+            }
+
+            if (column === 'difficulty') {
+                const difficultyA = parseInt(cellA.replace(/^V/, ''), 10);
+                const difficultyB = parseInt(cellB.replace(/^V/, ''), 10);
+                return isAscending ? difficultyA - difficultyB : difficultyB - difficultyA;
+            }
+
+            if (!isNaN(cellA) && !isNaN(cellB)) {
+                return isAscending ? Number(cellA) - Number(cellB) : Number(cellB) - Number(cellA);
+            }
+
+            return isAscending ? cellA.localeCompare(cellB) : cellB.localeCompare(cellA);
+        });
+
+        tbody.innerHTML = '';
+        sortedRows.forEach(row => tbody.appendChild(row));
+
+        // Toggle sort order
+        sortOrder[column] = isAscending ? 'desc' : 'asc';
+    }
+</script>
+
 {% endblock %}

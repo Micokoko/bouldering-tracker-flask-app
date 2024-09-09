@@ -139,7 +139,7 @@ def user_page():
         formatted_date = format_date(attempt_date) if attempt_date else 'Invalid date'
 
         print(f"Original date: {attempt_date}, Formatted date: {formatted_date}")
-        formatted_attempt = dict(attempt)  
+        formatted_attempt = dict(attempt)  # Convert sqlite3.Row to dict
         formatted_attempt['attempt_date'] = formatted_date
         formatted_attempts.append(formatted_attempt)
 
