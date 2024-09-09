@@ -17,9 +17,9 @@ def create_boulder_form():
     if request.method == 'POST':
         name = request.form['name']
         color = request.form['color']
-        difficulty = request.form['difficulty']
-        numberofmoves = request.form['numberofmoves']
-        set_date = request.form.get('set_date')  
+        difficulty = request.form.get('difficulty', type=int)
+        numberofmoves = request.form.get('numberofmoves', type=int)
+        set_date = request.form.get('set_date')
         db = get_db()
         error = None
 
@@ -27,25 +27,24 @@ def create_boulder_form():
             error = 'Name is required.'
         elif not color:
             error = 'Color is required.'
-        elif not difficulty:
-            error = 'Difficulty is required.'
-        elif not numberofmoves:
-            error = 'Number of moves is required.'
+        elif difficulty is None:
+            error = 'Difficulty is required and must be an integer.'
+        elif numberofmoves is None:
+            error = 'Number of moves is required and must be an integer.'
         elif not set_date:
             error = 'Set date is required.'
 
         if error is None:
             try:
-                # Ensure set_date is in the correct format
                 set_date = datetime.strptime(set_date, '%Y-%m-%d').date()
                 db.execute(
-                    "INSERT INTO boulder (name, color, difficulty, numberofmoves, set_date) VALUES (?, ?, ?, ?, ?)",
-                    (name, color, difficulty, numberofmoves, set_date),
+                    "INSERT INTO boulder (name, color, difficulty, numberofmoves, set_date, created_by) VALUES (?, ?, ?, ?, ?, ?)",
+                    (name, color, difficulty, numberofmoves, set_date, g.user['id']),
                 )
                 db.commit()
                 return redirect(url_for('create_boulder.admin'))
-            except db.IntegrityError:
-                error = "Unable to add boulder."
+            except db.IntegrityError as e:
+                error = f"Unable to add boulder: {e}"
 
         flash(error)
 
@@ -64,8 +63,8 @@ def update_boulder_form(id):
     if request.method == 'POST':
         name = request.form['name']
         color = request.form['color']
-        difficulty = request.form['difficulty']
-        numberofmoves = request.form['numberofmoves']
+        difficulty = request.form.get('difficulty', type=int)
+        numberofmoves = request.form.get('numberofmoves', type=int)
         set_date = request.form.get('set_date')
         error = None
 
@@ -73,16 +72,15 @@ def update_boulder_form(id):
             error = 'Name is required.'
         elif not color:
             error = 'Color is required.'
-        elif not difficulty:
-            error = 'Difficulty is required.'
-        elif not numberofmoves:
-            error = 'Number of moves is required.'
+        elif difficulty is None:
+            error = 'Difficulty is required and must be an integer.'
+        elif numberofmoves is None:
+            error = 'Number of moves is required and must be an integer.'
         elif not set_date:
             error = 'Set date is required.'
 
         if error is None:
             try:
-                # Ensure set_date is in the correct format
                 set_date = datetime.strptime(set_date, '%Y-%m-%d').date()
                 db.execute(
                     "UPDATE boulder SET name = ?, color = ?, difficulty = ?, numberofmoves = ?, set_date = ? WHERE id = ?",
@@ -90,8 +88,8 @@ def update_boulder_form(id):
                 )
                 db.commit()
                 return redirect(url_for('create_boulder.admin'))
-            except db.IntegrityError:
-                error = "Unable to update boulder."
+            except db.IntegrityError as e:
+                error = f"Unable to update boulder: {e}"
 
         flash(error)
 

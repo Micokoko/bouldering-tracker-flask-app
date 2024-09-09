@@ -5,6 +5,11 @@
 
     <form method="post">
       <header><h1>Register</h1></header>
+      
+      {% for message in get_flashed_messages() %}
+      <div class=" font-italic alert alert-danger">{{ message }}</div>
+      {% endfor %}
+
         <div class="mb-3">
           <label for="username" class="form-label">Username</label>
           <input name="username" id="username" class="form-control" required>

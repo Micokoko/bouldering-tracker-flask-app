@@ -3,14 +3,17 @@ import click
 from flask import current_app, g
 from flask.cli import with_appcontext
 
+
 def get_db():
     if 'db' not in g:
         g.db = sqlite3.connect(
             current_app.config['DATABASE'],
-            detect_types=sqlite3.PARSE_DECLTYPES
+            detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES
         )
         g.db.row_factory = sqlite3.Row
     return g.db
+
+
 
 def close_db(e=None):
     db = g.pop('db', None)
@@ -19,13 +22,13 @@ def close_db(e=None):
 
 def init_db():
     db = get_db()
-    # Drop existing tables
+ 
     db.executescript('''
         DROP TABLE IF EXISTS user;
         DROP TABLE IF EXISTS boulder;
-        DROP TABLE IF EXISTS ATTEMPT
+        DROP TABLE IF EXISTS attempt
     ''')
-    # Create new tables
+
     with current_app.open_resource('schema.sql') as f:
         db.executescript(f.read().decode('utf8'))
 
@@ -39,3 +42,18 @@ def init_db_command():
 def init_app(app):
     app.teardown_appcontext(close_db)
     app.cli.add_command(init_db_command)
+
+
+import sqlite3
+
+def convert_timestamp(val):
+    try:
+
+        if isinstance(val, str) and ' ' in val:
+            datepart, timepart = val.split(' ')
+            return datepart, timepart
+        else:
+
+            return val, None
+    except ValueError:
+        return val, None

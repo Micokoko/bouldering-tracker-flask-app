@@ -1,6 +1,6 @@
-DROP TABLE IF EXISTS user;
-DROP TABLE IF EXISTS boulder;
 DROP TABLE IF EXISTS attempt;
+DROP TABLE IF EXISTS boulder;
+DROP TABLE IF EXISTS user;
 
 CREATE TABLE user (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -19,16 +19,18 @@ CREATE TABLE boulder (
     color TEXT NOT NULL,
     difficulty INTEGER NOT NULL,
     numberofmoves INTEGER NOT NULL,
-    set_date DATE 
+    set_date DATE,
+    created_by INTEGER NOT NULL,
+    FOREIGN KEY (created_by) REFERENCES user(id)
 );
 
 CREATE TABLE attempt (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
+    number_of_attempts INTEGER NOT NULL,
+    status TEXT CHECK(status IN ('incomplete', 'completed', 'flash')) NOT NULL,
+    attempt_date DATE DEFAULT (DATE('now')),
     user_id INTEGER NOT NULL,
     boulder_id INTEGER NOT NULL,
-    numberofmoves INTEGER NOT NULL,
-    status TEXT CHECK(status IN ('incomplete', 'completed')) NOT NULL,
-    attempt_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES user(id),
     FOREIGN KEY (boulder_id) REFERENCES boulder(id)
 );

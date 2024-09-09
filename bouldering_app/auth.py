@@ -5,6 +5,9 @@ from flask import (
 from werkzeug.security import check_password_hash, generate_password_hash
 from bouldering_app.db import get_db
 
+from datetime import datetime, date
+
+
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 @bp.route('/register', methods=('GET', 'POST'))
@@ -58,7 +61,6 @@ def login():
         db = get_db()
         error = None
 
-        # Check if the user exists
         user = db.execute(
             'SELECT * FROM user WHERE username = ?', (username,)
         ).fetchone()
@@ -75,10 +77,10 @@ def login():
             session['user_id'] = user['id']
             if user['username'] == 'admin':
                 return redirect(url_for('auth.admin'))
-            return redirect(url_for('auth.user_page'))  # Redirect to user_page on successful login
+            return redirect(url_for('auth.user_page')) 
 
         flash(error)
-        return redirect(url_for('index'))# Flash error message if login fails
+        return redirect(url_for('index'))
 
     return render_template('climber/user_page.html')
 
@@ -108,12 +110,40 @@ def login_required(view):
 
     return wrapped_view
 
+
+
+def format_date(date_value):
+    if isinstance(date_value, str):
+        try:
+            return datetime.strptime(date_value, '%Y-%m-%d').strftime('%Y-%m-%d')
+        except ValueError:
+            return 'Invalid date'
+    elif isinstance(date_value, date):
+        return date_value.strftime('%Y-%m-%d')
+    else:
+        return 'Invalid date'
+
+
+
 @bp.route('/user_page')
 @login_required
 def user_page():
     db = get_db()
     boulders = db.execute('SELECT * FROM boulder').fetchall()
-    return render_template('climber/user_page.html', boulders=boulders)
+    attempts = db.execute('SELECT * FROM attempt WHERE user_id = ?', (g.user['id'],)).fetchall()
+
+
+    formatted_attempts = []
+    for attempt in attempts:
+        attempt_date = attempt['attempt_date']  
+        formatted_date = format_date(attempt_date) if attempt_date else 'Invalid date'
+
+        print(f"Original date: {attempt_date}, Formatted date: {formatted_date}")
+        formatted_attempt = dict(attempt)  
+        formatted_attempt['attempt_date'] = formatted_date
+        formatted_attempts.append(formatted_attempt)
+
+    return render_template('climber/user_page.html', boulders=boulders, attempts=formatted_attempts)
 
 
 @bp.route('/route_setter')
