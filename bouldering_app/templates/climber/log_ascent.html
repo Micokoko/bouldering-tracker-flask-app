@@ -6,10 +6,23 @@
         <h1>{{ 'Edit' if attempt else 'Log' }} ascent for {{ boulder.name }}</h1>
     </header>
     
-    <form method="post" action="{{ url_for('log_ascent.log_ascent_user', id=boulder.id, attempt_id=attempt.id if attempt else '') }}">
+    <form method="post" action="{{ url_for('log_ascent.log_ascent_user', id=boulder.id) }}">
         {% if attempt %}
             <input type="hidden" name="attempt_id" value="{{ attempt.id }}">
         {% endif %}
+
+        {% with messages = get_flashed_messages(with_categories=True) %}
+            {% if messages %}
+                <div class="container mt-3">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+    
         
         <div class="form-group">
             <label for="number_of_attempts">Log attempts</label>
@@ -17,16 +30,12 @@
         </div>
 
         <div class="form-group">
-            <label for="status">Status</label>
-            <select class="form-control" id="status" name="status">
-                <option value="incomplete">Incomplete</option>
-                <option value="completed">Completed</option>
-                <option value="flash">Flash</option>
-            </select>
+            <label for="moves_completed">Moves Completed (out of {{ boulder.numberofmoves }})</label>
+            <input type="number" name="moves_completed" id="moves_completed" class="form-control" placeholder="Enter moves completed" value="{{ attempt.moves_completed if attempt else '' }}" required>
         </div>
         
         <div class="form-group">
-            <label for="attempt_date">Set Date</label>
+            <label for="attempt_date">Attempt Date</label>
             <input type="date" id="attempt_date" name="attempt_date" value="{{ attempt.attempt_date if attempt else '' }}" required>
         </div>
         

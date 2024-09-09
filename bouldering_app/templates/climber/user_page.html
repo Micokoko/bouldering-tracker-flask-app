@@ -6,7 +6,6 @@
         <h1>Welcome, {{ g.user['username'] }}</h1>
     </header>
     
-    <p>Your profile page is under construction.</p>
     <h1>All Boulders</h1>
 
     {% if boulders %}
@@ -18,8 +17,8 @@
                     <th class="text-center">Difficulty</th>
                     <th class="text-center">Number of Moves</th>
                     <th class="text-center">Attempts</th>
-                    <th class="text-center">Status</th>
-                    <th class="text-center">Attempt Date</th> <!-- New column -->
+                    <th class="text-center">Status</th> <!-- Add new column for displaying moves completed and status -->
+                    <th class="text-center">Attempt Date</th>
                     <th class="text-center">Log Ascent</th>
                 </tr>
             </thead>
@@ -41,19 +40,24 @@
                     {% if attempts_for_boulder %}
                         {% set attempt = attempts_for_boulder[0] %}
                         <td>{{ attempt.number_of_attempts }}</td>
-                        <td>{{ attempt.status }}</td>
-                        <td>{{ attempt.attempt_date }}</td>
+                        <!-- Updated logic to display status and moves completed -->
                         <td>
-                            <a class="btn btn-warning" href="{{ url_for('log_ascent.log_ascent_user', id=boulder.id, attempt_id=attempt.id) }}">Update Log</a>
+                            {% if attempt.status == 'flashed' %}
+                                Flashed
+                            {% elif attempt.status == 'completed' %}
+                                Completed all {{ boulder.numberofmoves }} moves
+                            {% elif attempt.status == 'incomplete' %}
+                                Completed {{ attempt.moves_completed }} of {{ boulder.numberofmoves }} moves
+                            {% endif %}
                         </td>
+                        <td>{{ attempt.attempt_date }}</td>
                     {% else %}
                         <td>0</td>
                         <td>No log record yet</td>
-                        <td>N/A</td> 
-                        <td>
-                            <a class="btn btn-warning" href="{{ url_for('log_ascent.log_ascent_user', id=boulder.id) }}">Log</a>
-                        </td>
+                        <td>N/A</td>
                     {% endif %}
+                    
+                    <td><a class="btn btn-warning" href="{{ url_for('log_ascent.log_ascent_user', id=boulder.id) }}">Log</a></td>
                 </tr>
                 {% endfor %}
             </tbody>            

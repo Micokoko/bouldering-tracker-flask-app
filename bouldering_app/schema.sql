@@ -27,10 +27,11 @@ CREATE TABLE boulder (
 CREATE TABLE attempt (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     number_of_attempts INTEGER NOT NULL,
-    status TEXT CHECK(status IN ('incomplete', 'completed', 'flash')) NOT NULL,
+    status TEXT CHECK(status IN ('incomplete', 'completed', 'flashed')) NOT NULL,
     attempt_date DATE DEFAULT (DATE('now')),
     user_id INTEGER NOT NULL,
     boulder_id INTEGER NOT NULL,
+    moves_completed INTEGER,
     FOREIGN KEY (user_id) REFERENCES user(id),
     FOREIGN KEY (boulder_id) REFERENCES boulder(id)
 );
