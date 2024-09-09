@@ -30,7 +30,7 @@
                     <td>  V{{ boulder.difficulty }}</td>
                     <td>{{ boulder.numberofmoves }}</td>
                     <td>Complete or Incomplete</td>
-                    <td><a  class="btn btn-warning" href="{{ url_for('log_ascent.log_ascent_user') }}">Log</a></td>
+                    <td><a  class="btn btn-warning" href="{{ url_for('log_ascent.log_ascent_user', id=boulder.id) }}">Log</a></td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -38,7 +38,8 @@
     {% else %}
         <p>No boulders found.</p>
     {% endif %}
+    
 
-  <a href="{{ url_for('auth.logout') }}" class="btn btn-secondary">Log Out</a>
+<a href="{{ url_for('auth.logout') }}" class="btn btn-secondary">Log Out</a>
 </section>
 {% endblock %}

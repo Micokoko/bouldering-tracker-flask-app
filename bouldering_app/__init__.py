@@ -33,6 +33,9 @@ def create_app(test_config=None):
     
     from . import create_boulder
     app.register_blueprint(create_boulder.bp)
+    
+    from . import log_ascent
+    app.register_blueprint(log_ascent.bp)
 
     # a simple page that says hello
     @app.route('/')

@@ -7,7 +7,14 @@ from .auth import login_required
 bp = Blueprint('log_ascent', __name__, url_prefix='/climber')
 
 
-@bp.route('/<int:boulder_id>/log_ascent', methods=('GET', 'POST'))
+@bp.route('/<int:id>/log_ascent', methods=('GET', 'POST'))
 @login_required
-def log_ascent_user(boulder_id):
-    pass
+def log_ascent_user(id):
+    db = get_db()
+    boulder = db.execute('SELECT * FROM boulder WHERE id = ?', (id,)).fetchone()
+    
+    if boulder is None:
+        flash('Boulder not found.')
+        
+    
+    return render_template('climber/log_ascent.html', boulder=boulder)
