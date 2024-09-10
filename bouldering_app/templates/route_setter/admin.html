@@ -20,6 +20,7 @@
             <th class="text-center">Color of holds</th>
             <th class="text-center">Difficulty</th>
             <th class="text-center">Number of Moves</th>
+            <th class="text-center">Description</th>
             <th class="text-center">Edit</th>
             </tr>
         </thead>
@@ -30,6 +31,7 @@
             <td>{{ boulder.name }}</td>
             <td style="background-color: {{ boulder.color }};"></td>
             <td>V{{ boulder.difficulty }}</td>
+            <td>{{ boulder.description }}</td>
             <td>{{ boulder.numberofmoves }}</td>
             <td>
                 <a class="btn btn-warning" href="{{ url_for('create_boulder.update_boulder_form', id=boulder.id) }}">Update</a>

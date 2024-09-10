@@ -129,43 +129,49 @@ def format_date(date_value):
 @login_required
 def user_page():
     db = get_db()
-    
-    # Fetch all boulders and the user's attempts
+    user_id = g.user['id']
+
     boulders = db.execute('SELECT * FROM boulder').fetchall()
-    attempts = db.execute('SELECT * FROM attempt WHERE user_id = ?', (g.user['id'],)).fetchall()
+    attempts = db.execute('SELECT * FROM attempt WHERE user_id = ?', (user_id,)).fetchall()
 
-    # Fetch user statistics
-    user_stats = db.execute('SELECT highest_grade_climbed, highest_grade_flashed FROM user WHERE id = ?', (g.user['id'],)).fetchone()
-    
-    if user_stats:
-        highest_grade_climbed = user_stats['highest_grade_climbed']
-        highest_grade_flashed = user_stats['highest_grade_flashed']
-    else:
-        highest_grade_climbed = 'N/A'
-        highest_grade_flashed = 'N/A'
-
-    # Fetch the total number of boulders completed
-    total_boulders_completed = db.execute(
-        'SELECT COUNT(DISTINCT boulder_id) FROM attempt WHERE user_id = ? AND status = "completed"', 
-        (g.user['id'],)
-    ).fetchone()[0]
-    
-    # Format attempts
     formatted_attempts = []
     for attempt in attempts:
-        attempt_date = attempt['attempt_date']
+        attempt_date = attempt['attempt_date']  
         formatted_date = format_date(attempt_date) if attempt_date else 'Invalid date'
-
-        formatted_attempt = dict(attempt)  # Convert sqlite3.Row to dict
+        formatted_attempt = dict(attempt) 
         formatted_attempt['attempt_date'] = formatted_date
         formatted_attempts.append(formatted_attempt)
 
-    return render_template('climber/user_page.html', 
-                        boulders=boulders, 
-                        attempts=formatted_attempts,
-                        highest_grade_climbed=highest_grade_climbed,
-                        highest_grade_flashed=highest_grade_flashed,
-                        total_boulders_completed=total_boulders_completed)
+    highest_grade_climbed = max(
+        (boulder['difficulty'] for boulder in boulders 
+        if any(attempt['boulder_id'] == boulder['id'] and attempt['status'] in ['completed', 'flashed']
+                for attempt in attempts)), 
+        default=0
+    )
+
+    highest_grade_flashed = max(
+        (boulder['difficulty'] for boulder in boulders 
+        if any(attempt['boulder_id'] == boulder['id'] and attempt['status'] == 'flashed'
+                for attempt in attempts)), 
+        default=0
+    )
+
+    boulders_completed = len(set(
+        attempt['boulder_id'] for attempt in attempts 
+        if attempt['status'] in ['completed', 'flashed']
+    ))
+
+    return render_template(
+        'climber/user_page.html', 
+        boulders=boulders, 
+        attempts=formatted_attempts,
+        highest_grade_climbed=highest_grade_climbed,
+        highest_grade_flashed=highest_grade_flashed,
+        boulders_completed=boulders_completed
+    )
+
+
+
 
 @bp.route('/route_setter')
 @login_required
