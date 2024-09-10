@@ -40,7 +40,8 @@
                 {% for boulder in boulders %}
                 <tr>
                     <td>{{ boulder.name }}</td>
-                    <td style="background-color: {{ boulder.color }};"></td>
+                    <td class="card" style="background-color: {{ boulder.color }}; width: 30px; height: 30px;">
+                    </td>
                     <td>V{{ boulder.difficulty }}</td>
                     <td class="total-moves">{{ boulder.numberofmoves }}</td>
             
@@ -152,8 +153,45 @@
 
         sortOrder[column] = isAscending ? 'desc' : 'asc';
     }
+    
+
+    function colorRows() {
+        const rows = document.querySelectorAll('#boulderTable tbody tr');
+        rows.forEach(row => {
+            const attemptsCell = row.querySelector('.attempts');
+            const statusCell = row.querySelector('.status');
+            
+            if (attemptsCell && statusCell) {
+                const attempts = parseInt(attemptsCell.textContent.trim(), 10);
+                let status = statusCell.textContent.trim().toLowerCase();
+    
+                if (status.includes('completed')) {
+                    status = 'completed';
+                } else if (status.includes('flashed')) {
+                    status = 'flashed';
+                } else if (status.includes('incomplete')) {
+                    status = 'incomplete';
+                } else {
+                    status = 'no log record yet';
+                }
+
+                if (attempts >= 1 && status === 'incomplete') {
+                    row.style.backgroundColor = '#FF474D';
+
+
+                } else if (attempts > 1 && status === 'completed'){
+                    row.style.backgroundColor = '#90EE90';
+
+                }else if(attempts === 1 && status === 'flashed') {
+                    row.style.backgroundColor = '#e0f7fa'; 
+                }
+            }
+        });
+    }
+    
+
+    document.addEventListener('DOMContentLoaded', colorRows);
+    
+    
 </script>
-
-
-
 {% endblock %}
