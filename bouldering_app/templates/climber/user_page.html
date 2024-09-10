@@ -42,31 +42,31 @@
                     <td>{{ boulder.name }}</td>
                     <td style="background-color: {{ boulder.color }};"></td>
                     <td>V{{ boulder.difficulty }}</td>
-                    <td>{{ boulder.numberofmoves }}</td>
-                    
+                    <td class="total-moves">{{ boulder.numberofmoves }}</td>
+            
                     {% set attempts_for_boulder = [] %}
                     {% for attempt in attempts %}
                         {% if attempt.boulder_id == boulder.id %}
                             {% set attempts_for_boulder = attempts_for_boulder.append(attempt) %}
                         {% endif %}
                     {% endfor %}
-
+            
                     {% if attempts_for_boulder %}
                         {% set attempt = attempts_for_boulder[0] %}
-                        <td>{{ attempt.number_of_attempts }}</td>
-                        <td>
+                        <td class="attempts">{{ attempt.number_of_attempts }}</td>
+                        <td class="status">
                             {% if attempt.status == 'flashed' %}
                                 Flashed
                             {% elif attempt.status == 'completed' %}
-                                Completed all {{ boulder.numberofmoves }} moves
+                                Completed
                             {% elif attempt.status == 'incomplete' %}
-                                Completed {{ attempt.moves_completed }} of {{ boulder.numberofmoves }} moves
+                                Incomplete ({{ attempt.moves_completed }} / {{ boulder.numberofmoves }} moves)
                             {% endif %}
                         </td>
                         <td>{{ attempt.attempt_date }}</td>
                     {% else %}
-                        <td>0</td>
-                        <td>No log record yet</td>
+                        <td class="attempts">0</td>
+                        <td class="status">No log record yet</td>
                         <td>N/A</td>
                     {% endif %}
                     
@@ -96,29 +96,42 @@
             const cellA = rowA.children[columnIndex].textContent.trim();
             const cellB = rowB.children[columnIndex].textContent.trim();
 
+            if (column === 'status') {
+                const statusOrder = { 'flashed': 1, 'completed': 2, 'incomplete': 3 };
+                const statusA = statusOrder[cellA.toLowerCase().split(' ')[0]] || 4;
+                const statusB = statusOrder[cellB.toLowerCase().split(' ')[0]] || 4;
+
+                if (statusA === 3 && statusB === 3) {
+                    const movesCompletedA = parseInt(rowA.querySelector('.status').textContent.match(/\d+/g)[0] || 0, 10);
+                    const totalMovesA = parseInt(rowA.querySelector('.total-moves').textContent, 10);
+                    const movesCompletedB = parseInt(rowB.querySelector('.status').textContent.match(/\d+/g)[0] || 0, 10);
+                    const totalMovesB = parseInt(rowB.querySelector('.total-moves').textContent, 10);
+
+                    const percentA = (movesCompletedA / totalMovesA) * 100;
+                    const percentB = (movesCompletedB / totalMovesB) * 100;
+
+                    if (percentA !== percentB) {
+                        return isAscending ? percentB - percentA : percentA - percentB;
+                    }
+
+                    const attemptsA = parseInt(rowA.querySelector('.attempts').textContent, 10);
+                    const attemptsB = parseInt(rowB.querySelector('.attempts').textContent, 10);
+                    return isAscending ? attemptsA - attemptsB : attemptsB - attemptsA;
+                }
+
+                if (statusA === 2 && statusB === 2) {
+                    const attemptsA = parseInt(rowA.querySelector('.attempts').textContent, 10);
+                    const attemptsB = parseInt(rowB.querySelector('.attempts').textContent, 10);
+                    return isAscending ? attemptsA - attemptsB : attemptsB - attemptsA;
+                }
+
+                return isAscending ? statusA - statusB : statusB - statusA;
+            }
+
             if (column === 'attempt_date') {
                 const dateA = new Date(cellA);
                 const dateB = new Date(cellB);
                 return isAscending ? dateA - dateB : dateB - dateA;
-            }
-
-            if (column === 'status') {
-                const statusOrder = { 'flashed': 1, 'completed': 2, 'incomplete': 3 };
-                const statusA = statusOrder[cellA.toLowerCase()] || 4;
-                const statusB = statusOrder[cellB.toLowerCase()] || 4;
-
-                // For 'incomplete', sort by the percentage of moves completed
-                if (statusA === 3 && statusB === 3) {
-                    const movesCompletedA = parseInt(rowA.children[6].textContent.split(' ')[1] || 0, 10);
-                    const movesCompletedB = parseInt(rowB.children[6].textContent.split(' ')[1] || 0, 10);
-                    const totalMovesA = parseInt(rowA.children[4].textContent, 10);
-                    const totalMovesB = parseInt(rowB.children[4].textContent, 10);
-                    const percentA = (movesCompletedA / totalMovesA) * 100;
-                    const percentB = (movesCompletedB / totalMovesB) * 100;
-                    return isAscending ? percentA - percentB : percentB - percentA;
-                }
-
-                return isAscending ? statusA - statusB : statusB - statusA;
             }
 
             if (column === 'difficulty') {
@@ -137,9 +150,10 @@
         tbody.innerHTML = '';
         sortedRows.forEach(row => tbody.appendChild(row));
 
-        // Toggle sort order
         sortOrder[column] = isAscending ? 'desc' : 'asc';
     }
 </script>
+
+
 
 {% endblock %}
