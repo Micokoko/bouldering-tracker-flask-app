@@ -23,7 +23,6 @@
             {% endif %}
         {% endwith %}
     
-        
         <div class="form-group">
             <label for="number_of_attempts">Log attempts</label>
             <input type="number" name="number_of_attempts" id="number_of_attempts" class="form-control" placeholder="Log number of attempts" value="{{ attempt.number_of_attempts if attempt else '' }}" required>
@@ -41,5 +40,28 @@
         
         <button type="submit" class="btn btn-primary">{{ 'Update' if attempt else 'Log' }}</button>
     </form>
+
+    <hr>
+
+    <!-- Ranking Section -->
+    <h2>Ranking for {{ boulder.name }}</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Rank</th>
+                <th>Climber</th>
+                <th>Attempts</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for rank in rankings %}
+            <tr>
+                <td>{{ rank['rank'] }}</td>
+                <td>{{ rank['climber'] }}</td>
+                <td>{{ rank['number_of_attempts'] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </section>
 {% endblock %}

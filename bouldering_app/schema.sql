@@ -35,3 +35,23 @@ CREATE TABLE attempt (
     FOREIGN KEY (user_id) REFERENCES user(id),
     FOREIGN KEY (boulder_id) REFERENCES boulder(id)
 );
+
+
+CREATE VIEW boulder_ranking AS
+SELECT 
+    boulder.id AS boulder_id,
+    boulder.name AS boulder_name,
+    user.username AS climber,
+    attempt.number_of_attempts,
+    RANK() OVER (
+        PARTITION BY boulder.id 
+        ORDER BY attempt.number_of_attempts ASC
+    ) AS rank
+FROM 
+    attempt
+JOIN 
+    boulder ON attempt.boulder_id = boulder.id
+JOIN 
+    user ON attempt.user_id = user.id
+WHERE 
+    attempt.status = 'completed';

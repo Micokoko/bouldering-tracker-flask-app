@@ -39,11 +39,12 @@
             <tbody>
                 {% for boulder in boulders %}
                 <tr>
-                    <td>{{ boulder.name }}</td>
-                    <td class="card" style="background-color: {{ boulder.color }}; width: 30px; height: 30px;">
+                    <td class="text-center align-middle">{{ boulder.name }}</td>
+                    <td class="align-middle">
+                        <div class="card" style="background-color: {{ boulder.color }}; width: 30px; height: 30px; border-radius: 50%;"></div>
                     </td>
-                    <td>V{{ boulder.difficulty }}</td>
-                    <td class="total-moves">{{ boulder.numberofmoves }}</td>
+                    <td class="text-center align-middle">V{{ boulder.difficulty }}</td>
+                    <td class="text-center align-middle total-moves">{{ boulder.numberofmoves }}</td>
             
                     {% set attempts_for_boulder = [] %}
                     {% for attempt in attempts %}
@@ -54,8 +55,8 @@
             
                     {% if attempts_for_boulder %}
                         {% set attempt = attempts_for_boulder[0] %}
-                        <td class="attempts">{{ attempt.number_of_attempts }}</td>
-                        <td class="status">
+                        <td class="text-center align-middle attempts">{{ attempt.number_of_attempts }}</td>
+                        <td class="text-center align-middle status">
                             {% if attempt.status == 'flashed' %}
                                 Flashed
                             {% elif attempt.status == 'completed' %}
@@ -64,14 +65,14 @@
                                 Incomplete ({{ attempt.moves_completed }} / {{ boulder.numberofmoves }} moves)
                             {% endif %}
                         </td>
-                        <td>{{ attempt.attempt_date }}</td>
+                        <td class="text-center align-middle">{{ attempt.attempt_date }}</td>
                     {% else %}
-                        <td class="attempts">0</td>
-                        <td class="status">No log record yet</td>
-                        <td>N/A</td>
+                        <td class="text-center align-middle attempts">0</td>
+                        <td class="text-center align-middle status">No log record yet</td>
+                        <td class="text-center align-middle">N/A</td>
                     {% endif %}
                     
-                    <td><a class="btn btn-warning" href="{{ url_for('log_ascent.log_ascent_user', id=boulder.id) }}">Log</a></td>
+                    <td class="text-center align-middle"><a class="btn btn-warning" href="{{ url_for('log_ascent.log_ascent_user', id=boulder.id) }}">Log</a></td>
                 </tr>
                 {% endfor %}
             </tbody>            
@@ -174,16 +175,29 @@
                 } else {
                     status = 'no log record yet';
                 }
-
-                if (attempts >= 1 && status === 'incomplete') {
-                    row.style.backgroundColor = '#FF474D';
-
-
-                } else if (attempts > 1 && status === 'completed'){
-                    row.style.backgroundColor = '#90EE90';
-
-                }else if(attempts === 1 && status === 'flashed') {
-                    row.style.backgroundColor = '#e0f7fa'; 
+    
+                if (status === 'incomplete') {
+                    row.style.backgroundColor = '#FFF200'; // Bright yellow for incomplete
+                } else if (status === 'completed') {
+                    if (attempts === 1) {
+                        row.style.backgroundColor = '#8eff00'; // Light greenish yellow
+                    } else if (attempts === 2) {
+                        row.style.backgroundColor = '#99ff00'; // Slightly darker greenish yellow
+                    } else if (attempts === 3) {
+                        row.style.backgroundColor = '#a3ff00'; // More yellow-green
+                    } else if (attempts === 4) {
+                        row.style.backgroundColor = '#adff00'; // Yellow-green
+                    } else if (attempts === 5) {
+                        row.style.backgroundColor = '#b7ff00'; // Brighter yellow-green
+                    } else if (attempts === 6) {
+                        row.style.backgroundColor = '#c2ff00'; // More yellow
+                    } else if (attempts === 7) {
+                        row.style.backgroundColor = '#c7ff33'; // Slightly lighter yellow
+                    } else if (attempts >= 8) {
+                        row.style.backgroundColor = '#cfff66'; // Bright yellow-green
+                    }
+                } else if (status === 'flashed') {
+                    row.style.backgroundColor = '#43A9D9'; // Light blue-green for flashed
                 }
             }
         });
@@ -191,7 +205,5 @@
     
 
     document.addEventListener('DOMContentLoaded', colorRows);
-    
-    
 </script>
 {% endblock %}

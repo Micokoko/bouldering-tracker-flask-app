@@ -20,6 +20,11 @@ def log_ascent_user(id):
     attempt = db.execute(
         'SELECT * FROM attempt WHERE boulder_id = ? AND user_id = ?', (id, g.user['id'])
     ).fetchone()
+    
+    # Fetch the rankings for this boulder
+    rankings = db.execute(
+        'SELECT * FROM boulder_ranking WHERE boulder_id = ? ORDER BY rank ASC', (id,)
+    ).fetchall()
 
     if request.method == 'POST':
         attempts_str = request.form.get('number_of_attempts')
@@ -34,21 +39,18 @@ def log_ascent_user(id):
             moves_completed = int(moves_completed_str)
             attempt_date = datetime.strptime(attempt_date_str, '%Y-%m-%d').date()
 
-
             if moves_completed > boulder['numberofmoves']:
                 flash('Moves completed cannot be greater than the total number of moves.', 'danger')
-                return render_template('climber/log_ascent.html', boulder=boulder, attempt=attempt)
-
+                return render_template('climber/log_ascent.html', boulder=boulder, attempt=attempt, rankings=rankings)
 
             if number_of_attempts == 1 and moves_completed == boulder['numberofmoves']:
                 status = 'flashed'
             elif moves_completed == boulder['numberofmoves']:
                 status = 'completed'
             else:
-                status = 'incomplete'  
+                status = 'incomplete'
             
             print(f"DEBUG: Determined Status (for DB): {status}")
-
 
             if attempt:
                 db.execute(
@@ -84,6 +86,7 @@ def log_ascent_user(id):
             flash(f"Unexpected Error: {e}", 'danger')
             print(f"DEBUG: Unexpected Error: {e}")
 
-    return render_template('climber/log_ascent.html', boulder=boulder, attempt=attempt)
+    return render_template('climber/log_ascent.html', boulder=boulder, attempt=attempt, rankings=rankings)
+
 
 
