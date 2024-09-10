@@ -4,6 +4,14 @@
 <section class="content">
     <header>
         <h1>{{ 'Edit' if attempt else 'Log' }} ascent for {{ boulder.name }}</h1>
+        
+        {% if boulder.image %}
+            <img src="{{ url_for('static', filename='uploads/' + boulder.image) }}" style="width: 500px;" alt="{{ boulder.name }}">
+
+        {% else %}
+            <img src="{{ url_for('static', filename='images/spray-wall.jpg') }}" style="width: 500px;" alt="Spray Wall">
+        {% endif %}
+        <p>{{ boulder.description }}</p>
     </header>
     
     <form method="post" action="{{ url_for('log_ascent.log_ascent_user', id=boulder.id) }}">
@@ -43,7 +51,6 @@
 
     <hr>
 
-    <!-- Ranking Section -->
     <h2>Ranking for {{ boulder.name }}</h2>
     <table class="table">
         <thead>

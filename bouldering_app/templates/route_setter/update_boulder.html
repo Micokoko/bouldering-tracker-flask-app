@@ -2,7 +2,7 @@
 
 {% block content %}
 <h1>Update Boulder</h1>
-<form method="post">
+<form method="post" enctype="multipart/form-data">
     <div class="form-group">
         <label for="name">Name</label>
         <input type="text" name="name" id="name" class="form-control" value="{{ boulder['name'] }}" required>
@@ -18,6 +18,16 @@
     <div class="form-group">
         <label for="numberofmoves">Number of Moves</label>
         <input type="number" name="numberofmoves" id="numberofmoves" class="form-control" value="{{ boulder['numberofmoves'] }}" required>
+    </div>
+
+    <div class="form-group">
+        <label for="description">Description:</label>
+        <textarea name="description"></textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="boulder_image">Upload Image:</label>
+        <input type="file" name="boulder_image" accept="image/*">
     </div>
 
     <div class="form-group">

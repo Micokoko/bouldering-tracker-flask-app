@@ -9,6 +9,7 @@ def create_app(test_config=None):
     app.config.from_mapping(
         SECRET_KEY='dev',  # Consider changing this in production
         DATABASE=os.path.join(app.instance_path, 'boulder.sqlite'),
+        UPLOAD_FOLDER='static/uploads/',  # Ensure this is set correctly
     )
 
     if test_config is None:
@@ -38,10 +39,10 @@ def create_app(test_config=None):
     from . import log_ascent
     app.register_blueprint(log_ascent.bp)
     
-    
     # A simple page that says hello
     @app.route('/')
     def index():
         return render_template('auth/login.html')
 
     return app
+

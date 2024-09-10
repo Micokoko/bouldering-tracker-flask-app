@@ -21,7 +21,6 @@ def log_ascent_user(id):
         'SELECT * FROM attempt WHERE boulder_id = ? AND user_id = ?', (id, g.user['id'])
     ).fetchone()
     
-    # Fetch the rankings for this boulder
     rankings = db.execute(
         'SELECT * FROM boulder_ranking WHERE boulder_id = ? ORDER BY rank ASC', (id,)
     ).fetchall()
@@ -56,19 +55,19 @@ def log_ascent_user(id):
                 db.execute(
                     """
                     UPDATE attempt 
-                    SET number_of_attempts = ?, status = ?, attempt_date = ?, moves_completed = ? 
+                    SET number_of_attempts = ?, status = ?, attempt_date = ?, moves_completed = ?, difficulty = ? 
                     WHERE id = ?
                     """,
-                    (number_of_attempts, status, attempt_date, moves_completed, attempt['id'])
+                    (number_of_attempts, status, attempt_date, moves_completed, boulder['difficulty'], attempt['id'])
                 )
                 flash('Ascent updated successfully.')
             else:
                 db.execute(
                     """
-                    INSERT INTO attempt (number_of_attempts, status, attempt_date, user_id, boulder_id, moves_completed) 
-                    VALUES (?, ?, ?, ?, ?, ?)
+                    INSERT INTO attempt (number_of_attempts, status, attempt_date, user_id, boulder_id, moves_completed, difficulty) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?)
                     """,
-                    (number_of_attempts, status, attempt_date, g.user['id'], boulder['id'], moves_completed)
+                    (number_of_attempts, status, attempt_date, g.user['id'], boulder['id'], moves_completed, boulder['difficulty'])
                 )
                 flash('Ascent logged successfully.')
 
@@ -87,6 +86,3 @@ def log_ascent_user(id):
             print(f"DEBUG: Unexpected Error: {e}")
 
     return render_template('climber/log_ascent.html', boulder=boulder, attempt=attempt, rankings=rankings)
-
-
-

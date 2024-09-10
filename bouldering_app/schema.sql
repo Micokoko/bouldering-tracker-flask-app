@@ -1,6 +1,7 @@
 DROP TABLE IF EXISTS attempt;
 DROP TABLE IF EXISTS boulder;
 DROP TABLE IF EXISTS user;
+DROP VIEW IF EXISTS boulder_ranking;
 
 CREATE TABLE user (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -10,7 +11,9 @@ CREATE TABLE user (
     email TEXT UNIQUE NOT NULL,
     password TEXT NOT NULL,
     gender TEXT NOT NULL,
-    age TEXT NOT NULL
+    age TEXT NOT NULL,
+    highest_grade_climbed INTEGER DEFAULT 0,  
+    highest_grade_flashed INTEGER DEFAULT 0   
 );
 
 CREATE TABLE boulder (
@@ -20,6 +23,8 @@ CREATE TABLE boulder (
     difficulty INTEGER NOT NULL,
     numberofmoves INTEGER NOT NULL,
     set_date DATE,
+    description TEXT,  
+    image TEXT,  
     created_by INTEGER NOT NULL,
     FOREIGN KEY (created_by) REFERENCES user(id)
 );
@@ -32,10 +37,10 @@ CREATE TABLE attempt (
     user_id INTEGER NOT NULL,
     boulder_id INTEGER NOT NULL,
     moves_completed INTEGER,
+    difficulty INTEGER NOT NULL,  -- Store the difficulty of the boulder when this attempt was made
     FOREIGN KEY (user_id) REFERENCES user(id),
     FOREIGN KEY (boulder_id) REFERENCES boulder(id)
 );
-
 
 CREATE VIEW boulder_ranking AS
 SELECT 

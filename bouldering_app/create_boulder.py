@@ -1,11 +1,18 @@
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, url_for
+    Blueprint, flash, g, redirect, render_template, request, url_for, current_app
 )
+import os
+from werkzeug.utils import secure_filename
 from bouldering_app.db import get_db
 from .auth import login_required
 from datetime import datetime
 
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
 bp = Blueprint('create_boulder', __name__, url_prefix='/route_setter')
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @bp.route('/add_boulder', methods=('GET', 'POST'))
 @login_required
@@ -20,6 +27,8 @@ def create_boulder_form():
         difficulty = request.form.get('difficulty', type=int)
         numberofmoves = request.form.get('numberofmoves', type=int)
         set_date = request.form.get('set_date')
+        description = request.form['description']
+        boulder_image = request.files.get('boulder_image')
         db = get_db()
         error = None
 
@@ -36,19 +45,34 @@ def create_boulder_form():
 
         if error is None:
             try:
+                image_filename = None
+                if boulder_image and boulder_image.filename:
+                    if allowed_file(boulder_image.filename):
+                        image_filename = secure_filename(boulder_image.filename)
+                        image_path = os.path.join(current_app.config['UPLOAD_FOLDER'], image_filename)
+                        if not os.path.exists(os.path.dirname(image_path)):
+                            os.makedirs(os.path.dirname(image_path))
+                        boulder_image.save(image_path)
+                    else:
+                        error = 'File type not allowed.'
+                        raise ValueError(error)
+
                 set_date = datetime.strptime(set_date, '%Y-%m-%d').date()
                 db.execute(
-                    "INSERT INTO boulder (name, color, difficulty, numberofmoves, set_date, created_by) VALUES (?, ?, ?, ?, ?, ?)",
-                    (name, color, difficulty, numberofmoves, set_date, g.user['id']),
+                    "INSERT INTO boulder (name, color, difficulty, numberofmoves, set_date, description, image, created_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                    (name, color, difficulty, numberofmoves, set_date, description, image_filename, g.user['id']),
                 )
                 db.commit()
                 return redirect(url_for('create_boulder.admin'))
             except db.IntegrityError as e:
                 error = f"Unable to add boulder: {e}"
+            except ValueError as e:
+                flash(str(e))
 
         flash(error)
 
     return render_template('route_setter/add_boulder.html')
+
 
 @bp.route('/<int:id>/update', methods=('GET', 'POST'))
 @login_required
@@ -66,6 +90,8 @@ def update_boulder_form(id):
         difficulty = request.form.get('difficulty', type=int)
         numberofmoves = request.form.get('numberofmoves', type=int)
         set_date = request.form.get('set_date')
+        description = request.form['description']
+        boulder_image = request.files.get('boulder_image')
         error = None
 
         if not name:
@@ -81,19 +107,34 @@ def update_boulder_form(id):
 
         if error is None:
             try:
+                # Handle image file if provided
+                image_filename = boulder['image']  # Keep existing image if no new image is uploaded
+                if boulder_image and boulder_image.filename:
+                    if allowed_file(boulder_image.filename):
+                        image_filename = secure_filename(boulder_image.filename)
+                        image_path = os.path.join(current_app.config['UPLOAD_FOLDER'], image_filename)
+                        boulder_image.save(image_path)
+                    else:
+                        error = 'File type not allowed.'
+                        raise ValueError(error)
+
                 set_date = datetime.strptime(set_date, '%Y-%m-%d').date()
                 db.execute(
-                    "UPDATE boulder SET name = ?, color = ?, difficulty = ?, numberofmoves = ?, set_date = ? WHERE id = ?",
-                    (name, color, difficulty, numberofmoves, set_date, id),
+                    "UPDATE boulder SET name = ?, color = ?, difficulty = ?, numberofmoves = ?, description = ?, image = ?, set_date = ? WHERE id = ?",
+                    (name, color, difficulty, numberofmoves, description, image_filename, set_date, id),
                 )
                 db.commit()
                 return redirect(url_for('create_boulder.admin'))
             except db.IntegrityError as e:
                 error = f"Unable to update boulder: {e}"
+            except ValueError as e:
+                flash(str(e))
 
         flash(error)
 
     return render_template('route_setter/update_boulder.html', boulder=boulder)
+
+
 
 @bp.route('/<int:id>/delete', methods=('POST',))
 @login_required
@@ -113,6 +154,7 @@ def delete_boulder(id):
     db.commit()
     flash('Boulder deleted successfully.')
     return redirect(url_for('create_boulder.admin'))
+
 
 @bp.route('/admin')
 @login_required
