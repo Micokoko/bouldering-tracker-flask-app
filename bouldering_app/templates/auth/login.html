@@ -2,11 +2,15 @@
 
 {% block content %}
 
-    <h1 class="card-title">Welcome to Boulder Tracker</h1>
-    <p class="card-text">Please use the form below to log in or register:</p>
-    {% for message in get_flashed_messages() %}
-        <div class=" font-italic alert alert-danger">{{ message }}</div>
-    {% endfor %}
+    <div class="d-inline-flex flex-column align-items-center justify-content-center" style="width: 100%;">
+        <h1 class="card-title" style="font-family: 'Inconsolata', monospace;
+                            font-optical-sizing: auto;
+                            font-weight: 300;
+                            font-style: normal;">ROCK-A-PHILE</h1>
+        <img src="{{ url_for('static', filename='images/rock-a-file-logo.png') }}" style="width: 250px; " alt="Rock-a-file-logo">
+        {% for message in get_flashed_messages() %}
+            <div class="font-italic alert alert-danger">{{ message }}</div>
+        {% endfor %}
         <form class="mt-15" style="margin-top: 20px" method="post" action="{{ url_for('auth.login') }}">
             <div class="form-group">
                 <label for="username">Username</label>
@@ -22,5 +26,6 @@
             
             <a href="{{ url_for('auth.register') }}" class="btn btn-secondary">Register</a>
         </form>
+    </div>
 
 {% endblock %}
