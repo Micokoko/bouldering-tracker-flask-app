@@ -31,22 +31,21 @@
 
 
 <h1 class="font-bold text-2xl">Ranked Boulders(V6 and above)</h1>
-<section>
-
+<section class="mt-5">
     {% if ranked_boulders %}
         {% for boulder in ranked_boulders %}
-        <div class="flex flex-col items-center border border-gray-200 rounded-lg shadow md:max-w-xl dark:bg-gray-800 w-80 h-100 mb-4">
+        <div class="flex flex-col items-center border border-gray-200 rounded-lg shadow md:max-w-xl dark:bg-gray-800 w-full max-w-xs h-auto mb-4 text-left">
+            <h5 class="text-xl font-semibold p-4 border-b border-gray-200 dark:border-gray-700">{{ boulder.name }}</h5>
             {% if boulder.image %}
-                <img class="w-full h-auto pt-4 md:w-48 md:h-48" src="{{ url_for('static', filename='uploads/' + boulder.image) }}" alt="{{ boulder.name }}">
+            <img class="w-full h-auto pt-4 md:w-48 md:h-48" src="{{ url_for('static', filename='uploads/' + boulder.image) }}" alt="{{ boulder.name }}">
             {% else %}
-                <img class="w-full h-auto pt-4 md:w-48 md:h-48" src="{{ url_for('static', filename='images/spray-wall.jpg') }}" alt="Spray Wall">
+            <img class="w-full h-auto pt-4 md:w-48 md:h-48" src="{{ url_for('static', filename='images/spray-wall.jpg') }}" alt="Spray Wall">
             {% endif %}
+
             <div class="flex flex-col justify-between p-4 leading-normal w-full">
-                <h5 class="mb-2 text-xl font-bold tracking-tight text-gray-900 dark:text-white">{{ boulder.name }}</h5>
                 <p class="mb-1 font-normal text-gray-700 dark:text-gray-400">Description: {{ boulder.description }}</p>
                 <p class="mb-1 font-normal text-gray-700 dark:text-gray-400">Difficulty: V{{ boulder.difficulty }}</p>
-                <p class="mb-1 font-normal text-gray-700 dark:text-gray-400 flex items-center">
-                    Color of holds: 
+                <p class="mb-1 font-normal text-gray-700 dark:text-gray-400" >                    Color of holds: 
                     <div class="ml-2" style="background-color: {{ boulder.color }}; width: 30px; height: 30px; border-radius: 50%;"></div>
                 </p>                
                             
@@ -63,10 +62,10 @@
                         {% endif %}
                     </p>
                     <p class="mb-1 font-normal text-gray-700 dark:text-gray-400">Attempt date: {{ attempt.attempt_date }}</p>
-                    <p class="text-center mb-3"><a class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" href="{{ url_for('log_ascent.log_ascent_user', id=boulder.id) }}">Update Log</a></p>
+                    <p class="text-center mt-5 mb-3"><a class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" href="{{ url_for('log_ascent.log_ascent_user', id=boulder.id) }}">Update Log</a></p>
                 {% else %}
                     <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">No log record yet</p>
-                    <p class="text-center mb-2">
+                    <p class="text-center mt-5 mb-3">
                         <a class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" href="{{ url_for('log_ascent.log_ascent_user', id=boulder.id) }}">Log</a>
                     </p>
                 {% endif %}
@@ -81,21 +80,21 @@
 
 <h1 class="font-bold text-2xl">Non-Ranked Boulders</h1>
 <h1 class="font-bold text-2xl">(V5 and below)</h1>
-<section class="pb-40">
+<section class="pb-40 mt-5">
     {% if non_ranked_boulders %}
         {% for boulder in non_ranked_boulders %}
-        <div class="flex flex-col items-center border border-gray-200 rounded-lg shadow md:max-w-xl dark:bg-gray-800 w-80 h-100 mb-4">
+        <div class="flex flex-col items-center border border-gray-200 rounded-lg shadow md:max-w-xl dark:bg-gray-800 w-full max-w-xs h-auto mb-4 text-left">
+            <h5 class="text-xl font-semibold p-4 border-b border-gray-200 dark:border-gray-700">{{ boulder.name }}</h5>
             {% if boulder.image %}
-                <img class="w-full h-auto pt-4 md:w-48 md:h-48" src="{{ url_for('static', filename='uploads/' + boulder.image) }}" alt="{{ boulder.name }}">
+            <img class="w-full h-auto pt-4 md:w-48 md:h-48" src="{{ url_for('static', filename='uploads/' + boulder.image) }}" alt="{{ boulder.name }}">
             {% else %}
-                <img class="w-full h-auto pt-4 md:w-48 md:h-48" src="{{ url_for('static', filename='images/spray-wall.jpg') }}" alt="Spray Wall">
+            <img class="w-full h-auto pt-4 md:w-48 md:h-48" src="{{ url_for('static', filename='images/spray-wall.jpg') }}" alt="Spray Wall">
             {% endif %}
+
             <div class="flex flex-col justify-between p-4 leading-normal w-full">
-                <h5 class="mb-2 text-xl font-bold tracking-tight text-gray-900 dark:text-white">{{ boulder.name }}</h5>
                 <p class="mb-1 font-normal text-gray-700 dark:text-gray-400">Description: {{ boulder.description }}</p>
                 <p class="mb-1 font-normal text-gray-700 dark:text-gray-400">Difficulty: V{{ boulder.difficulty }}</p>
-                <p class="mb-1 font-normal text-gray-700 dark:text-gray-400">
-                    Color of holds:
+                <p class="mb-1 font-normal text-gray-700 dark:text-gray-400" >                    Color of holds:
                     <div style="background-color: {{ boulder.color }}; width: 30px; height: 30px; border-radius: 50%;"></div>
                 </p>
                 <p class="mb-1 font-normal text-gray-700 dark:text-gray-400">Number of moves: {{ boulder.numberofmoves }}</p>
@@ -111,10 +110,10 @@
                         {% endif %}
                     </p>
                     <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">Attempt date: {{ attempt.attempt_date }}</p>
-                    <p class="text-center mb-3"><a class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" href="{{ url_for('log_ascent.log_ascent_user', id=boulder.id) }}">Update Log</a></p>
+                    <p class="text-center mt-5 mb-3"><a class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" href="{{ url_for('log_ascent.log_ascent_user', id=boulder.id) }}">Update Log</a></p>
                 {% else %}
                     <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">No log record yet</p>
-                    <p class="text-center mb-3"><a class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" href="{{ url_for('log_ascent.log_ascent_user', id=boulder.id) }}">Log</a></p>
+                    <p class="text-center mt-5 mb-3"><a class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" href="{{ url_for('log_ascent.log_ascent_user', id=boulder.id) }}">Log</a></p>
                 {% endif %}
             </div>
         </div>

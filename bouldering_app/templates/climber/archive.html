@@ -1,16 +1,15 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="flex flex-col justify-center items-center mb-16"> <!-- Added mb-16 to account for fixed footer height -->
-    <section class="content">
-        <header>
-            <h1>Archived Boulders</h1>
-        </header>
+<div class="flex flex-col justify-center items-center mb-16">
+    <section class="mt-5 flex flex-col justify-center items-center text-center mb-16">
+            <h1 class="text-3xl font-bold mb-6" >Archived Boulders</h1>
+
 
         <section class="pb-40">
             {% if archived_boulders %}
                 {% for boulder in archived_boulders %}
-                <div class="flex flex-col items-center border border-gray-200 rounded-lg shadow md:max-w-xl dark:bg-gray-800 w-full max-w-xs h-auto mb-4">
+                <div class="flex flex-col items-center border border-gray-200 rounded-lg shadow md:max-w-xl dark:bg-gray-800 w-full max-w-xs h-auto mb-4 text-left">
                     {% if boulder.image %}
                     <img class="w-full h-auto pt-4 md:w-48 md:h-48" src="{{ url_for('static', filename='uploads/' + boulder.image) }}" alt="{{ boulder.name }}">
                     {% else %}
