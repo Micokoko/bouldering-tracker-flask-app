@@ -2,19 +2,21 @@
 
 {% block content %}
 <section class="content">
-    <header>
-        <h1>{{ 'Edit' if attempt else 'Log' }} ascent for {{ boulder.name }}</h1>
+    <header class="ml-6  align">
+        <h1 class="mt-5 text-3xl font-bold dark:text-white">{{ 'Edit' if attempt else 'Log' }} ascent for:</h1> 
+        <h2 class="mb-5 text-4xl font-bold dark:text-white">{{ boulder.name }}</h2>
         
         {% if boulder.image %}
-            <img src="{{ url_for('static', filename='uploads/' + boulder.image) }}" style="width: 500px;" alt="{{ boulder.name }}">
+            <img class="ml-8 h-auto max-w-xs rounded-lg"  src="{{ url_for('static', filename='uploads/' + boulder.image) }}" style="width: 500px;" alt="{{ boulder.name }}">
 
         {% else %}
-            <img src="{{ url_for('static', filename='images/spray-wall.jpg') }}" style="width: 500px;" alt="Spray Wall">
+            <img class="ml-8 h-auto max-w-xs rounded-lg"  src="{{ url_for('static', filename='images/spray-wall.jpg') }}" style="width: 500px;" alt="Spray Wall">
         {% endif %}
-        <p>{{ boulder.description }}</p>
+        <p class="mt-6">Boulder description:</p>
+        <p class="mb-6">{{ boulder.description }}</p>
     </header>
     
-    <form method="post" action="{{ url_for('log_ascent.log_ascent_user', id=boulder.id) }}">
+    <form class="max-w-sm mx-auto" method="post" action="{{ url_for('log_ascent.log_ascent_user', id=boulder.id) }}">
         {% if attempt %}
             <input type="hidden" name="attempt_id" value="{{ attempt.id }}">
         {% endif %}
@@ -23,7 +25,7 @@
             {% if messages %}
                 <div class="container mt-3">
                     {% for category, message in messages %}
-                        <div class="alert alert-{{ category }}">
+                        <div class="alert alert-{{ category }}" style="color: red;">
                             {{ message }}
                         </div>
                     {% endfor %}
@@ -31,25 +33,55 @@
             {% endif %}
         {% endwith %}
     
-        <div class="form-group">
-            <label for="number_of_attempts">Log attempts</label>
-            <input type="number" name="number_of_attempts" id="number_of_attempts" class="form-control" placeholder="Log number of attempts" value="{{ attempt.number_of_attempts if attempt else '' }}" required>
+        <div class="mb-5">
+            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="number_of_attempts">Log attempts</label>
+            <input class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" type="number" name="number_of_attempts" id="number_of_attempts"  placeholder="Log number of attempts" value="{{ attempt.number_of_attempts if attempt else '' }}" required>
         </div>
 
         <div class="form-group">
-            <label for="moves_completed">Moves Completed (out of {{ boulder.numberofmoves }})</label>
-            <input type="number" name="moves_completed" id="moves_completed" class="form-control" placeholder="Enter moves completed" value="{{ attempt.moves_completed if attempt else '' }}" required>
+            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="moves_completed">Moves Completed (out of {{ boulder.numberofmoves }})</label>
+            <input class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" type="number" name="moves_completed" id="moves_completed"  placeholder="Enter moves completed" value="{{ attempt.moves_completed if attempt else '' }}" required>
         </div>
         
         <div class="form-group">
-            <label for="attempt_date">Attempt Date</label>
-            <input type="date" id="attempt_date" name="attempt_date" value="{{ attempt.attempt_date if attempt else '' }}" required>
+            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="attempt_date">Attempt Date</label>
+            <input class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" type="date" id="attempt_date" name="attempt_date" value="{{ attempt.attempt_date if attempt else '' }}" required>
         </div>
         
-        <button type="submit" class="btn btn-primary">{{ 'Update' if attempt else 'Log' }}</button>
+        <button type="submit" class=" mt-5 focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">{{ 'Update' if attempt else 'Log' }}</button>
     </form>
 </section>
 
+
+<div class="fixed bottom-0 left-0 z-50 w-full h-16 bg-white border-t border-gray-200 dark:bg-gray-700 dark:border-gray-600">
+    <div class="grid h-full max-w-lg grid-cols-4 mx-auto font-medium">
+        <a href="{{ url_for('auth.user_page') }}" class="inline-flex flex-col items-center justify-center px-5 border-gray-200 border-x hover:bg-gray-50 dark:hover:bg-gray-800 group dark:border-gray-600">
+            <svg class="w-5 h-5 mb-2 text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                <path d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z"/>
+            </svg>
+            <span class="text-sm text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-500">Profile</span>
+        </a>
+        <a href="{{ url_for('log_ascent.archive') }}" class="inline-flex flex-col items-center justify-center px-5 border-e border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 group dark:border-gray-600">
+            <svg class="w-5 h-5 mb-2 text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M11.074 4 8.442.408A.95.95 0 0 0 7.014.254L2.926 4h8.148ZM9 13v-1a4 4 0 0 1 4-4h6V6a1 1 0 0 0-1-1H1a1 1 0 0 0-1 1v13a1 1 0 0 0 1 1h17a1 1 0 0 0 1-1v-2h-6a4 4 0 0 1-4-4Z"/>
+                <path d="M19 10h-6a2 2 0 0 0-2 2v1a2 2 0 0 0 2 2h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1Zm-4.5 3.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2ZM12.62 4h2.78L12.539.41a1.086 1.086 0 1 0-1.7 1.352L12.62 4Z"/>
+            </svg>
+            <span class="text-sm text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-500">Archive</span>
+        </a>
+        <a href="{{ url_for('leaderboards.leaderboards') }}" class="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 dark:hover:bg-gray-800 group">
+            <svg class="w-5 h-5 mb-2 text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12.25V1m0 11.25a2.25 2.25 0 0 0 0 4.5m0-4.5a2.25 2.25 0 0 1 0 4.5M4 19v-2.25m6-13.5V1m0 2.25a2.25 2.25 0 0 0 0 4.5m0-4.5a2.25 2.25 0 0 1 0 4.5M10 19V7.75m6 4.5V1m0 11.25a2.25 2.25 0 1 0 0 4.5 2.25 2.25 0 0 0 0-4.5ZM16 19v-2"/>
+            </svg>
+            <span class="text-sm text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-500">Leaderboards</span>
+        </a>
+        <a href="{{ url_for('auth.logout') }}" class="inline-flex flex-col items-center justify-center px-5 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 group border-x dark:border-gray-600">
+            <svg class="w-5 h-5 mb-2 text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm0 5a3 3 0 1 1 0 6 3 3 0 0 1 0-6Zm0 13a8.949 8.949 0 0 1-4.951-1.488A3.987 3.987 0 0 1 9 13h2a3.987 3.987 0 0 1 3.951 3.512A8.949 8.949 0 0 1 10 18Z"/>
+            </svg>
+            <span class="text-sm text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-500">Logout</span>
+        </a>
+    </div>
+</div>
 
 
 {% endblock %}
