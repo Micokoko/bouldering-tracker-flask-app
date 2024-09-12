@@ -1,20 +1,32 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<section class="content">
-    <header>
-        <h1>Welcome, {{ g.user['username'] }}</h1>
-    </header>
+<section class="inline-block  text-white p-4">
 
-    <div class="card" style="background-color:#31363F;">
+    <div class="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+        <div class="flex flex-col items-center pb-10">
+            <img class="w-24 h-24 mb-3 rounded-full shadow-lg" src="{{ url_for('static', filename='uploads/DOG.png') }}" alt="Dog photo for now"/>
+            <header>
+            <h1 class="mb-1 text-xl font-medium text-gray-900 dark:text-white">{{ g.user['firstname'] }} {{ g.user['Lastname'] }}</h1>
+            </header>
+
         <div>
-            <h3>Highest grade climbed: v{{ highest_grade_climbed }}</h3>
-            <h3>Highest grade flashed: v{{ highest_grade_flashed }}</h3>
-            <h3>Total number of boulders completed: {{ boulders_completed }}</h3>
+                <div>
+                    <div class="p-3 border border-gray-200 rounded-lg shadow w-32">Highest grade climbed: 
+                        <h3>v{{ highest_grade_climbed }}</h3>
+                    </div>
+                    <div class="p-3 border border-gray-200 rounded-lg shadow w-32">Highest grade flashed: 
+                        <h3>v{{ highest_grade_flashed }}</h3>
+                    </div>
+                    <div class="p-3 border border-gray-200 rounded-lg shadow w-32">Total boulders sent: 
+                        <h3>{{ boulders_completed }}</h3>
+                    </div>
+                
+            </div>
         </div>
     </div>
 
-    <!-- Ranked Boulders (Difficulty 6 and above) -->
+
     <h1>Ranked Boulders (V6 and above)</h1>
     {% if ranked_boulders %}
         <table class="table table-striped table-bordered" id="rankedBoulderTable" style="background-color: #76ABAE;">
@@ -64,7 +76,6 @@
         <p>No ranked boulders found.</p>
     {% endif %}
 
-    <!-- Non-Ranked Boulders (Difficulty 5 and below) -->
     <h1>Non-Ranked Boulders (V5 and below)</h1>
     {% if non_ranked_boulders %}
         <table class="table table-striped table-bordered" id="nonRankedBoulderTable" style="background-color: #76ABAE;">
@@ -114,131 +125,45 @@
         <p>No non-ranked boulders found.</p>
     {% endif %}
 
-    <a href="{{ url_for('auth.logout') }}" class="btn btn-secondary">Log Out</a>
-    <a href="{{ url_for('log_ascent.archive') }}" class="btn btn-primary">Archive</a>
-    <a href="{{ url_for('leaderboards.leaderboards') }}" class="btn btn-primary">View Leaderboards</a>
-</section>
-
-<script>
-    let sortOrder = {};
-
-    function sortTable(column) {
-        const table = document.getElementById('boulderTable');
-        const tbody = table.querySelector('tbody');
-        const rows = Array.from(tbody.querySelectorAll('tr'));
-        const columnIndex = Array.from(table.querySelectorAll('th')).findIndex(th => th.dataset.column === column);
-        const isAscending = sortOrder[column] === 'asc' ? true : false;
-
-        const sortedRows = rows.sort((rowA, rowB) => {
-            const cellA = rowA.children[columnIndex].textContent.trim();
-            const cellB = rowB.children[columnIndex].textContent.trim();
-
-            if (column === 'status') {
-                const statusOrder = { 'flashed': 1, 'completed': 2, 'incomplete': 3 };
-                const statusA = statusOrder[cellA.toLowerCase().split(' ')[0]] || 4;
-                const statusB = statusOrder[cellB.toLowerCase().split(' ')[0]] || 4;
-
-                if (statusA === 3 && statusB === 3) {
-                    const movesCompletedA = parseInt(rowA.querySelector('.status').textContent.match(/\d+/g)[0] || 0, 10);
-                    const totalMovesA = parseInt(rowA.querySelector('.total-moves').textContent, 10);
-                    const movesCompletedB = parseInt(rowB.querySelector('.status').textContent.match(/\d+/g)[0] || 0, 10);
-                    const totalMovesB = parseInt(rowB.querySelector('.total-moves').textContent, 10);
-
-                    const percentA = (movesCompletedA / totalMovesA) * 100;
-                    const percentB = (movesCompletedB / totalMovesB) * 100;
-
-                    if (percentA !== percentB) {
-                        return isAscending ? percentB - percentA : percentA - percentB;
-                    }
-
-                    const attemptsA = parseInt(rowA.querySelector('.attempts').textContent, 10);
-                    const attemptsB = parseInt(rowB.querySelector('.attempts').textContent, 10);
-                    return isAscending ? attemptsA - attemptsB : attemptsB - attemptsA;
-                }
-
-                if (statusA === 2 && statusB === 2) {
-                    const attemptsA = parseInt(rowA.querySelector('.attempts').textContent, 10);
-                    const attemptsB = parseInt(rowB.querySelector('.attempts').textContent, 10);
-                    return isAscending ? attemptsA - attemptsB : attemptsB - attemptsA;
-                }
-
-                return isAscending ? statusA - statusB : statusB - statusA;
-            }
-
-            if (column === 'attempt_date') {
-                const dateA = new Date(cellA);
-                const dateB = new Date(cellB);
-                return isAscending ? dateA - dateB : dateB - dateA;
-            }
-
-            if (column === 'difficulty') {
-                const difficultyA = parseInt(cellA.replace(/^V/, ''), 10);
-                const difficultyB = parseInt(cellB.replace(/^V/, ''), 10);
-                return isAscending ? difficultyA - difficultyB : difficultyB - difficultyA;
-            }
-
-            if (!isNaN(cellA) && !isNaN(cellB)) {
-                return isAscending ? Number(cellA) - Number(cellB) : Number(cellB) - Number(cellA);
-            }
-
-            return isAscending ? cellA.localeCompare(cellB) : cellB.localeCompare(cellA);
-        });
-
-        tbody.innerHTML = '';
-        sortedRows.forEach(row => tbody.appendChild(row));
-
-        sortOrder[column] = isAscending ? 'desc' : 'asc';
-    }
     
 
-    function colorRows() {
-        const rows = document.querySelectorAll('#boulderTable tbody tr');
-        rows.forEach(row => {
-            const attemptsCell = row.querySelector('.attempts');
-            const statusCell = row.querySelector('.status');
-            
-            if (attemptsCell && statusCell) {
-                const attempts = parseInt(attemptsCell.textContent.trim(), 10);
-                let status = statusCell.textContent.trim().toLowerCase();
+
     
-                if (status.includes('completed')) {
-                    status = 'completed';
-                } else if (status.includes('flashed')) {
-                    status = 'flashed';
-                } else if (status.includes('incomplete')) {
-                    status = 'incomplete';
-                } else {
-                    status = 'no log record yet';
-                }
-    
-                if (status === 'incomplete') {
-                    row.style.backgroundColor = '#FFF200'; // Bright yellow for incomplete
-                } else if (status === 'completed') {
-                    if (attempts === 1) {
-                        row.style.backgroundColor = '#8eff00'; // Light greenish yellow
-                    } else if (attempts === 2) {
-                        row.style.backgroundColor = '#99ff00'; // Slightly darker greenish yellow
-                    } else if (attempts === 3) {
-                        row.style.backgroundColor = '#a3ff00'; // More yellow-green
-                    } else if (attempts === 4) {
-                        row.style.backgroundColor = '#adff00'; // Yellow-green
-                    } else if (attempts === 5) {
-                        row.style.backgroundColor = '#b7ff00'; // Brighter yellow-green
-                    } else if (attempts === 6) {
-                        row.style.backgroundColor = '#c2ff00'; // More yellow
-                    } else if (attempts === 7) {
-                        row.style.backgroundColor = '#c7ff33'; // Slightly lighter yellow
-                    } else if (attempts >= 8) {
-                        row.style.backgroundColor = '#cfff66'; // Bright yellow-green
-                    }
-                } else if (status === 'flashed') {
-                    row.style.backgroundColor = '#43A9D9'; // Light blue-green for flashed
-                }
-            }
-        });
-    }
     
 
-    document.addEventListener('DOMContentLoaded', colorRows);
-</script>
+
+
+</section>    
+
+<div class="fixed bottom-0 left-0 z-50 w-full h-16 bg-white border-t border-gray-200 dark:bg-gray-700 dark:border-gray-600">
+    <div class="grid h-full max-w-lg grid-cols-4 mx-auto font-medium">
+        <a href="{{ url_for('auth.user_page') }}" class="inline-flex flex-col items-center justify-center px-5 border-gray-200 border-x hover:bg-gray-50 dark:hover:bg-gray-800 group dark:border-gray-600">
+            <svg class="w-5 h-5 mb-2 text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                <path d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z"/>
+            </svg>
+            <span class="text-sm text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-500">Profile</span>
+        </a>
+        <a href="{{ url_for('log_ascent.archive') }}" class="inline-flex flex-col items-center justify-center px-5 border-e border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 group dark:border-gray-600">
+            <svg class="w-5 h-5 mb-2 text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M11.074 4 8.442.408A.95.95 0 0 0 7.014.254L2.926 4h8.148ZM9 13v-1a4 4 0 0 1 4-4h6V6a1 1 0 0 0-1-1H1a1 1 0 0 0-1 1v13a1 1 0 0 0 1 1h17a1 1 0 0 0 1-1v-2h-6a4 4 0 0 1-4-4Z"/>
+                <path d="M19 10h-6a2 2 0 0 0-2 2v1a2 2 0 0 0 2 2h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1Zm-4.5 3.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2ZM12.62 4h2.78L12.539.41a1.086 1.086 0 1 0-1.7 1.352L12.62 4Z"/>
+            </svg>
+            <span class="text-sm text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-500">Archive</span>
+        </a>
+        <a href="{{ url_for('leaderboards.leaderboards') }}" class="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 dark:hover:bg-gray-800 group">
+            <svg class="w-5 h-5 mb-2 text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12.25V1m0 11.25a2.25 2.25 0 0 0 0 4.5m0-4.5a2.25 2.25 0 0 1 0 4.5M4 19v-2.25m6-13.5V1m0 2.25a2.25 2.25 0 0 0 0 4.5m0-4.5a2.25 2.25 0 0 1 0 4.5M10 19V7.75m6 4.5V1m0 11.25a2.25 2.25 0 1 0 0 4.5 2.25 2.25 0 0 0 0-4.5ZM16 19v-2"/>
+            </svg>
+            <span class="text-sm text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-500">Leaderboards</span>
+        </a>
+        <a href="{{ url_for('auth.logout') }}" class="inline-flex flex-col items-center justify-center px-5 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 group border-x dark:border-gray-600">
+            <svg class="w-5 h-5 mb-2 text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm0 5a3 3 0 1 1 0 6 3 3 0 0 1 0-6Zm0 13a8.949 8.949 0 0 1-4.951-1.488A3.987 3.987 0 0 1 9 13h2a3.987 3.987 0 0 1 3.951 3.512A8.949 8.949 0 0 1 10 18Z"/>
+            </svg>
+            <span class="text-sm text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-500">Logout</span>
+        </a>
+    </div>
+</div>
+
+
 {% endblock %}
