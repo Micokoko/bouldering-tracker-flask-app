@@ -3,6 +3,7 @@
 
 
 {% block content %}
+    <div class="d-inline-flex flex-column align-items-center justify-content-center">
     <h1>Add boulder here</h1>
 
     {% for message in get_flashed_messages() %}
@@ -45,5 +46,7 @@
         
         <button type="submit" class="btn btn-primary">Post</button>
     </form>
+
+</div>
 {% endblock  %}
     

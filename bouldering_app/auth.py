@@ -131,44 +131,72 @@ def user_page():
     db = get_db()
     user_id = g.user['id']
 
+    # Fetch all boulders
     boulders = db.execute('SELECT * FROM boulder').fetchall()
+    
+    # Fetch attempts for the current user
     attempts = db.execute('SELECT * FROM attempt WHERE user_id = ?', (user_id,)).fetchall()
 
+    # Format the attempt dates
     formatted_attempts = []
     for attempt in attempts:
-        attempt_date = attempt['attempt_date']  
+        attempt_date = attempt['attempt_date']
         formatted_date = format_date(attempt_date) if attempt_date else 'Invalid date'
-        formatted_attempt = dict(attempt) 
+        formatted_attempt = dict(attempt)
         formatted_attempt['attempt_date'] = formatted_date
         formatted_attempts.append(formatted_attempt)
 
+    # Separate the boulders based on difficulty
+    ranked_boulders = []
+    non_ranked_boulders = []
+
+    for boulder in boulders:
+        # Find the user's attempt (if any) for this boulder
+        user_attempt = next((attempt for attempt in attempts if attempt['boulder_id'] == boulder['id']), None)
+
+        # Only consider boulders with incomplete status or no attempt
+        if not user_attempt or user_attempt['status'] == 'incomplete':
+            if boulder['difficulty'] >= 6:
+                ranked_boulders.append({
+                    **boulder,
+                    'attempt': user_attempt
+                })
+            else:
+                non_ranked_boulders.append({
+                    **boulder,
+                    'attempt': user_attempt
+                })
+
+    # Calculate the highest grade climbed and flashed
     highest_grade_climbed = max(
-        (boulder['difficulty'] for boulder in boulders 
+        (boulder['difficulty'] for boulder in boulders
         if any(attempt['boulder_id'] == boulder['id'] and attempt['status'] in ['completed', 'flashed']
-                for attempt in attempts)), 
+                for attempt in attempts)),
         default=0
     )
 
     highest_grade_flashed = max(
-        (boulder['difficulty'] for boulder in boulders 
+        (boulder['difficulty'] for boulder in boulders
         if any(attempt['boulder_id'] == boulder['id'] and attempt['status'] == 'flashed'
-                for attempt in attempts)), 
+                for attempt in attempts)),
         default=0
     )
 
+    # Count boulders completed
     boulders_completed = len(set(
-        attempt['boulder_id'] for attempt in attempts 
+        attempt['boulder_id'] for attempt in attempts
         if attempt['status'] in ['completed', 'flashed']
     ))
 
     return render_template(
-        'climber/user_page.html', 
-        boulders=boulders, 
-        attempts=formatted_attempts,
+        'climber/user_page.html',
+        ranked_boulders=ranked_boulders,
+        non_ranked_boulders=non_ranked_boulders,
         highest_grade_climbed=highest_grade_climbed,
         highest_grade_flashed=highest_grade_flashed,
         boulders_completed=boulders_completed
     )
+
 
 
 

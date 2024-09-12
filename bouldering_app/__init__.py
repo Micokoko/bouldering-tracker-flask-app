@@ -39,6 +39,11 @@ def create_app(test_config=None):
     from . import log_ascent
     app.register_blueprint(log_ascent.bp)
     
+    from . import leaderboards
+    app.register_blueprint(leaderboards.bp)
+    
+
+    
     # A simple page that says hello
     @app.route('/')
     def index():

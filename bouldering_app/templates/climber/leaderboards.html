@@ -1,0 +1,35 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="content">
+    <h1>Leaderboards</h1>
+    {% for boulder_id, boulder_info in boulder_rankings.items() %}
+    <div class="boulder-table">
+        <h2>{{ boulder_info.name }}</h2>
+        {% if boulder_info.data %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Climber</th>
+                    <th>Number of Attempts</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in boulder_info.data %}
+                <tr>
+                    <td>{{ row.rank }}</td>
+                    <td>{{ row.climber }}</td>
+                    <td>{{ row.number_of_attempts }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No attempts logged for this boulder yet.</p>
+        {% endif %}
+    </div>
+    {% endfor %}
+</section>
+{% endblock %}

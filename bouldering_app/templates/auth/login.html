@@ -2,12 +2,12 @@
 
 {% block content %}
 
-    <div class="d-inline-flex flex-column align-items-center justify-content-center" style="width: 100%;">
+    <div class="">
         <h1 class="card-title" style="font-family: 'Inconsolata', monospace;
                             font-optical-sizing: auto;
                             font-weight: 300;
                             font-style: normal;">ROCK-A-PHILE</h1>
-        <img src="{{ url_for('static', filename='images/rock-a-file-logo.png') }}" style="width: 250px; " alt="Rock-a-file-logo">
+        <img src="{{ url_for('static', filename='images/rock-a-file-logo.png') }}" style="width: 230px; " alt="Rock-a-file-logo">
         {% for message in get_flashed_messages() %}
             <div class="font-italic alert alert-danger">{{ message }}</div>
         {% endfor %}

@@ -48,27 +48,5 @@
         
         <button type="submit" class="btn btn-primary">{{ 'Update' if attempt else 'Log' }}</button>
     </form>
-
-    <hr>
-
-    <h2>Ranking for {{ boulder.name }}</h2>
-    <table class="table" style="background-color:#76ABAE">
-        <thead>
-            <tr>
-                <th>Rank</th>
-                <th>Climber</th>
-                <th>Attempts</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for rank in rankings %}
-            <tr>
-                <td>{{ rank['rank'] }}</td>
-                <td>{{ rank['climber'] }}</td>
-                <td>{{ rank['number_of_attempts'] }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
 </section>
 {% endblock %}

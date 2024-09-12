@@ -13,83 +13,110 @@
             <h3>Total number of boulders completed: {{ boulders_completed }}</h3>
         </div>
     </div>
-    
-    <h1>All Boulders</h1>
 
-    {% if boulders %}
-        <table class="table table-striped table-bordered" id="boulderTable" style="background-color: #76ABAE;">
+    <!-- Ranked Boulders (Difficulty 6 and above) -->
+    <h1>Ranked Boulders (V6 and above)</h1>
+    {% if ranked_boulders %}
+        <table class="table table-striped table-bordered" id="rankedBoulderTable" style="background-color: #76ABAE;">
             <thead>
                 <tr>
-                    <th class="text-center" data-column="name">
-                        <a href="#" onclick="sortTable('name')">Name</a>
-                    </th>
-                    <th class="text-center" data-column="color">
-                        <a href="#" onclick="sortTable('color')">Color of Holds</a>
-                    </th>
-                    <th class="text-center" data-column="difficulty">
-                        <a href="#" onclick="sortTable('difficulty')">Difficulty</a>
-                    </th>
-                    <th class="text-center" data-column="numberofmoves">
-                        <a href="#" onclick="sortTable('numberofmoves')">Number of Moves</a>
-                    </th>
-                    <th class="text-center" data-column="number_of_attempts">
-                        <a href="#" onclick="sortTable('number_of_attempts')">Attempts</a>
-                    </th>
-                    <th class="text-center" data-column="status">
-                        <a href="#" onclick="sortTable('status')">Status</a>
-                    </th>
-                    <th class="text-center" data-column="attempt_date">
-                        <a href="#" onclick="sortTable('attempt_date')">Attempt Date</a>
-                    </th>
+                    <th class="text-center">Name</th>
+                    <th class="text-center">Color</th>
+                    <th class="text-center">Difficulty</th>
+                    <th class="text-center">Moves</th>
+                    <th class="text-center">Attempts</th>
+                    <th class="text-center">Status</th>
+                    <th class="text-center">Attempt Date</th>
                     <th class="text-center">Log Ascent</th>
                 </tr>
             </thead>
             <tbody>
-                {% for boulder in boulders %}
-                <tr>
-                    <td class="text-center align-middle">{{ boulder.name }}</td>
-                    <td class="align-middle">
-                        <div class="card" style="background-color: {{ boulder.color }}; width: 30px; height: 30px; border-radius: 50%;"></div>
-                    </td>
-                    <td class="text-center align-middle">V{{ boulder.difficulty }}</td>
-                    <td class="text-center align-middle total-moves">{{ boulder.numberofmoves }}</td>
-            
-                    {% set attempts_for_boulder = [] %}
-                    {% for attempt in attempts %}
-                        {% if attempt.boulder_id == boulder.id %}
-                            {% set attempts_for_boulder = attempts_for_boulder.append(attempt) %}
-                        {% endif %}
-                    {% endfor %}
-            
-                    {% if attempts_for_boulder %}
-                        {% set attempt = attempts_for_boulder[0] %}
-                        <td class="text-center align-middle attempts">{{ attempt.number_of_attempts }}</td>
-                        <td class="text-center align-middle status">
-                            {% if attempt.status == 'flashed' %}
-                                Flashed
-                            {% elif attempt.status == 'completed' %}
-                                Completed
-                            {% elif attempt.status == 'incomplete' %}
-                                Incomplete ({{ attempt.moves_completed }} / {{ boulder.numberofmoves }} moves)
-                            {% endif %}
+                {% for boulder in ranked_boulders %}
+                    <tr>
+                        <td class="text-center">{{ boulder.name }}</td>
+                        <td>
+                            <div class="card" style="background-color: {{ boulder.color }}; width: 30px; height: 30px; border-radius: 50%;"></div>
                         </td>
-                        <td class="text-center align-middle">{{ attempt.attempt_date }}</td>
-                    {% else %}
-                        <td class="text-center align-middle attempts">0</td>
-                        <td class="text-center align-middle status">No log record yet</td>
-                        <td class="text-center align-middle">N/A</td>
-                    {% endif %}
-                    
-                    <td class="text-center align-middle"><a class="btn btn-warning" href="{{ url_for('log_ascent.log_ascent_user', id=boulder.id) }}">Log</a></td>
-                </tr>
+                        <td class="text-center">V{{ boulder.difficulty }}</td>
+                        <td class="text-center">{{ boulder.numberofmoves }}</td>
+
+                        {% set attempt = boulder.attempt %}
+                        {% if attempt and attempt.status == 'incomplete' %}
+                            <td class="text-center">{{ attempt.number_of_attempts }}</td>
+                            <td class="text-center">
+                                Incomplete ({{ attempt.moves_completed }} / {{ boulder.numberofmoves }} moves)
+                            </td>
+                            <td class="text-center">{{ attempt.attempt_date }}</td>
+                        {% else %}
+                            <td class="text-center">0</td>
+                            <td class="text-center">No log record yet</td>
+                            <td class="text-center">N/A</td>
+                        {% endif %}
+
+                        <td class="text-center">
+                            <a class="btn btn-warning" href="{{ url_for('log_ascent.log_ascent_user', id=boulder.id) }}">Log</a>
+                        </td>
+                    </tr>
                 {% endfor %}
-            </tbody>            
+            </tbody>
         </table>
     {% else %}
-        <p>No boulders found.</p>
+        <p>No ranked boulders found.</p>
+    {% endif %}
+
+    <!-- Non-Ranked Boulders (Difficulty 5 and below) -->
+    <h1>Non-Ranked Boulders (V5 and below)</h1>
+    {% if non_ranked_boulders %}
+        <table class="table table-striped table-bordered" id="nonRankedBoulderTable" style="background-color: #76ABAE;">
+            <thead>
+                <tr>
+                    <th class="text-center">Name</th>
+                    <th class="text-center">Color</th>
+                    <th class="text-center">Difficulty</th>
+                    <th class="text-center">Moves</th>
+                    <th class="text-center">Attempts</th>
+                    <th class="text-center">Status</th>
+                    <th class="text-center">Attempt Date</th>
+                    <th class="text-center">Log Ascent</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for boulder in non_ranked_boulders %}
+                    <tr>
+                        <td class="text-center">{{ boulder.name }}</td>
+                        <td>
+                            <div class="card" style="background-color: {{ boulder.color }}; width: 30px; height: 30px; border-radius: 50%;"></div>
+                        </td>
+                        <td class="text-center">V{{ boulder.difficulty }}</td>
+                        <td class="text-center">{{ boulder.numberofmoves }}</td>
+
+                        {% set attempt = boulder.attempt %}
+                        {% if attempt and attempt.status == 'incomplete' %}
+                            <td class="text-center">{{ attempt.number_of_attempts }}</td>
+                            <td class="text-center">
+                                Incomplete ({{ attempt.moves_completed }} / {{ boulder.numberofmoves }} moves)
+                            </td>
+                            <td class="text-center">{{ attempt.attempt_date }}</td>
+                        {% else %}
+                            <td class="text-center">0</td>
+                            <td class="text-center">No log record yet</td>
+                            <td class="text-center">N/A</td>
+                        {% endif %}
+
+                        <td class="text-center">
+                            <a class="btn btn-warning" href="{{ url_for('log_ascent.log_ascent_user', id=boulder.id) }}">Log</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No non-ranked boulders found.</p>
     {% endif %}
 
     <a href="{{ url_for('auth.logout') }}" class="btn btn-secondary">Log Out</a>
+    <a href="{{ url_for('log_ascent.archive') }}" class="btn btn-primary">Archive</a>
+    <a href="{{ url_for('leaderboards.leaderboards') }}" class="btn btn-primary">View Leaderboards</a>
 </section>
 
 <script>

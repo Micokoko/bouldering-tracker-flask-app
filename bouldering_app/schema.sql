@@ -46,17 +46,21 @@ CREATE VIEW boulder_ranking AS
 SELECT 
     boulder.id AS boulder_id,
     boulder.name AS boulder_name,
-    user.username AS climber,
-    attempt.number_of_attempts,
+    COALESCE(user.username, 'No Attempts') AS climber,
+    COALESCE(attempt.number_of_attempts, 0) AS number_of_attempts,
     RANK() OVER (
         PARTITION BY boulder.id 
-        ORDER BY attempt.number_of_attempts ASC
+        ORDER BY COALESCE(attempt.number_of_attempts, 0) ASC, MIN(attempt.attempt_date) ASC
     ) AS rank
 FROM 
-    attempt
-JOIN 
-    boulder ON attempt.boulder_id = boulder.id
-JOIN 
+    boulder
+LEFT JOIN 
+    attempt ON boulder.id = attempt.boulder_id AND attempt.status IN ('completed', 'flashed')
+LEFT JOIN 
     user ON attempt.user_id = user.id
 WHERE 
-    attempt.status = 'completed';
+    boulder.difficulty >= 6
+GROUP BY 
+    boulder.id, user.username
+ORDER BY 
+    boulder.name;

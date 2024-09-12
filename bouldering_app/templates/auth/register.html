@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="d-flex justify-content-center" style='background-color:#31363F;'>
+<div class="register_forms d-flex justify-content-center" style='background-color:#31363F;'>
 
     <form method="post">
       <header><h1>Register</h1></header>
@@ -35,17 +35,22 @@
           <input name="email" id="email" class="form-control" required>
         </div>
 
-        <div class="mb-3">
+        <div class="register_gender mb-3">
           <label for="gender" class="form-label">Gender</label>
-          <input name="gender" id="gender" class="form-control" required>
+          <select name="gender" id="gender" class="form-select" required>
+            <option value="" disabled selected>Select Gender</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+          </select>
         </div>
+        
 
-        <div class="mb-3">
+        <div class="register_age mb-3">
           <label for="age" class="form-label">Age</label>
           <input name="age" id="age" class="form-control" required>
         </div>
 
-        <div class="text-center">
+        <div class="register_button text-center">
           <input type="submit" value="Register" class="btn btn-primary">
         </div>
     </form>
