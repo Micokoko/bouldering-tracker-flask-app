@@ -152,10 +152,10 @@ def format_date(date_value):
 def user_page():
     db = get_db()
     user_id = g.user['id']
-
     boulders = db.execute('SELECT * FROM boulder').fetchall()
-    
     attempts = db.execute('SELECT * FROM attempt WHERE user_id = ?', (user_id,)).fetchall()
+    user = db.execute('SELECT * FROM user WHERE id = ?', (g.user['id'],)).fetchone()
+
 
     formatted_attempts = []
     for attempt in attempts:
@@ -208,7 +208,8 @@ def user_page():
         non_ranked_boulders=non_ranked_boulders,
         highest_grade_climbed=highest_grade_climbed,
         highest_grade_flashed=highest_grade_flashed,
-        boulders_completed=boulders_completed
+        boulders_completed=boulders_completed,
+        user=user
     )
 
 
@@ -222,3 +223,47 @@ def admin():
     boulders = db.execute('SELECT * FROM boulder').fetchall()
     return render_template('route_setter/admin.html', boulders=boulders)
 
+
+@bp.route('/<int:id>/edit_user_details', methods=('GET', 'POST'))
+@login_required
+def edit_user_details(id):
+    db = get_db()
+    user = db.execute('SELECT * FROM user WHERE id = ?', (id,)).fetchone()
+
+
+    if user is None:
+        flash('User not found.')
+        return redirect(url_for('auth.user_page'))
+
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        profile_picture = request.files.get('profile_picture')
+        error = None
+
+        if error is None:
+            try:
+                image_filename = user['profile_picture']
+                if profile_picture and profile_picture.filename:
+                    if allowed_file(profile_picture.filename):
+                        image_filename = secure_filename(profile_picture.filename)
+                        image_path = os.path.join(current_app.config['UPLOAD_FOLDER'], image_filename)
+                        profile_picture.save(image_path)
+                    else:
+                        error = 'File type not allowed.'
+                        raise ValueError(error)
+
+                db.execute(
+                    "UPDATE user SET username = ?, password = ?, profile_picture = ? WHERE id = ?",
+                    (username, generate_password_hash(password), image_filename, id),
+                )
+                db.commit()
+                return redirect(url_for('auth.user_page'))
+            except db.IntegrityError as e:
+                error = f"Unable to update user details: {e}"
+            except ValueError as e:
+                flash(str(e))
+
+        flash(error)
+
+    return render_template('climber/edit_user_details.html', user=user)

@@ -107,8 +107,8 @@ def update_boulder_form(id):
 
         if error is None:
             try:
-                # Handle image file if provided
-                image_filename = boulder['image']  # Keep existing image if no new image is uploaded
+
+                image_filename = boulder['image']  
                 if boulder_image and boulder_image.filename:
                     if allowed_file(boulder_image.filename):
                         image_filename = secure_filename(boulder_image.filename)

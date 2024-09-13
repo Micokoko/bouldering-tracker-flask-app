@@ -2,45 +2,55 @@
 
 {% block content %}
 <div class="flex flex-col items-center justify-center w-full h-full p-4"> 
-            <section class="flex flex-col items-center justify-center w-full h-full p-4">
-                <div class="w-full flex justify-center max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 px-4">
-                    <div class="mt-5 flex flex-col items-center pb-10 w-full max-w-xs"> 
-                        {% if g.user['profile_picture'] %}
-                            <img class="w-24 h-24 rounded-full object-cover pt-4 md:w-48 md:h-48" 
-                                src="{{ url_for('static', filename='uploads/' + g.user['profile_picture']) }}" 
-                                alt="{{ g.user['firstname'] }} {{ g.user['lastname'] }} picture">
-                        {% else %}
-                            <div class="relative w-24 h-24 rounded-full bg-gray-100 dark:bg-gray-600 flex items-center justify-center">
-                                <svg class="w-16 h-16 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
-                                </svg>
-                            </div>
-                        {% endif %}
-
-                        <header class="text-center">
-                            <h1 class="mb-1 text-xl font-medium text-gray-900 dark:text-white">{{ g.user['firstname'] }} {{ g.user['Lastname'] }}</h1>
-                        </header>
-                        <div class="flex space-x-3 mt-3">
-                            <div class="inline w-36 p-3 border border-gray-200 rounded-lg shadow">
-                                Highest grade climbed: <span class="font-bold text-2xl">v{{ highest_grade_climbed }}</span>
-                            </div>
-                            <div class="inline w-36 p-3 border border-gray-200 rounded-lg shadow">
-                                Highest grade flashed: <span class="font-bold text-2xl">v{{ highest_grade_flashed }}</span>
-                            </div>
-                        </div>
-                        <div class="inline w-36 p-3 mt-4 border border-gray-200 rounded-lg shadow">
-                            Total boulders sent: <span class="font-bold text-2xl">{{ boulders_completed }}</span>
-                        </div>
+    <section class="flex flex-col items-center justify-center w-full h-full p-4">
+        <div class="w-full flex justify-center max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 px-4">
+            <div class="mt-5 flex flex-col items-center pb-10 w-full max-w-xs"> 
+                {% if g.user['profile_picture'] %}
+                    <img class="w-24 h-24 rounded-full object-cover pt-4 md:w-48 md:h-48" 
+                        src="{{ url_for('static', filename='uploads/' + g.user['profile_picture']) }}" 
+                        alt="{{ g.user['firstname'] }} {{ g.user['lastname'] }} picture">
+                {% else %}
+                    <div class="relative w-24 h-24 rounded-full bg-gray-100 dark:bg-gray-600 flex items-center justify-center">
+                        <svg class="w-16 h-16 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                        </svg>
                     </div>
+                {% endif %}
+
+                <header class="text-center">
+                    <h1 class="mb-1 text-xl font-medium text-gray-900 dark:text-white">{{ g.user['firstname'] }} {{ g.user['Lastname'] }}</h1>
+                    <div class="flex justify-center">
+                        <h1 class="mb-1 text-s font-medium text-gray-900 dark:text-white">@{{ g.user['username'] }}</h1>
+                        <a href="{{ url_for('auth.edit_user_details', id=user['id']) }}">
+                        <svg class="ml-1 h-6 w-6 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="3" />
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                        </svg>
+                        </a>
+                    </div>
+                        <div class="flex space-x-3 mt-3 mb-3">
+                            <div class="inline w-36 p-3 border border-gray-200 rounded-lg shadow">
+                                Highest grade climbed: 
+                                <span class="font-bold text-2xl">v{{ highest_grade_climbed }}</span>
+                            </div>
+                            <div class="inline w-36 p-3 border border-gray-200 rounded-lg shadow">
+                                Highest grade flashed: 
+                                <span class="font-bold text-2xl">v{{ highest_grade_flashed }}</span>
+                            </div>
+                    </div>
+                <div class="inline w-36 p-3 mt-4 border border-gray-200 rounded-lg shadow">
+                    Total boulders sent: <span class="font-bold text-2xl">{{ boulders_completed }}</span>
                 </div>
-            </section>
+            </div>
+        </div>
+    </section>
 <!-- Ranked Boulders -->
 <h1 class="font-bold text-2xl">Ranked Boulders (V6 and above)</h1>
 <section class="mt-5 w-full px-6">
     {% if ranked_boulders %}
         {% for boulder in ranked_boulders %}
         <div class="flex flex-col items-center border border-gray-200 rounded-lg overflow-hidden shadow dark:bg-gray-800 w-full h-auto mb-4 text-left mx-auto">
-            <h5 class="text-xl font-semibold p-4 border-b border-gray-200 dark:border-gray-700">{{ boulder.name }}</h5>
+            <h5 class="text-xl font-semibold p-4 border-b border-gray-200 dark:border-gray-700">{{ boulder.name }} </h5>
             {% if boulder.image %}
             <img class="w-full h-auto pt-4 md:w-48 md:h-48" src="{{ url_for('static', filename='uploads/' + boulder.image) }}" alt="{{ boulder.name }}">
             {% else %}
@@ -82,7 +92,7 @@
 </section>
 
 <!-- Non-Ranked Boulders -->
-<h1 class="font-bold text-2xl mt-5">Non-Ranked Boulders (V5 and below)</h1>
+<h1 class="ml-4 font-bold text-2xl mt-5">Non-Ranked Boulders (V5 and below)</h1>
 <div class="mb-60 w-full px-6">
 <section class="mt-5 w-full">
     {% if non_ranked_boulders %}
@@ -153,10 +163,10 @@
             <span class="text-sm text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-500">Leaderboards</span>
         </a>
         <a href="{{ url_for('auth.logout') }}" class="inline-flex flex-col items-center justify-center px-5 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 group border-x dark:border-gray-600">
-            <svg class="w-6 h-6  mb-2 text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 1 1-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 0 0 4.486-6.336l-3.276 3.277a3.004 3.004 0 0 1-2.25-2.25l3.276-3.276a4.5 4.5 0 0 0-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437 1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008Z" />
+            <svg class="w-6 h-6 mb-2 text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 16">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 8h11m0 0L8 4m4 4-4 4m4-11h3a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-3"/>
             </svg>
-            <span class="text-sm text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-500">Settings</span>
+            <span class="text-sm text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-500">Log Out</span>
         </a>
     </div>
 </div>
