@@ -1,6 +1,6 @@
 import functools
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, session, url_for
+    Blueprint, flash, g, redirect, render_template, request, session, url_for, current_app
 )
 
 import os
@@ -52,17 +52,18 @@ def register():
                 if profile_picture and profile_picture.filename:
                     if allowed_file(profile_picture.filename):
                         image_filename = secure_filename(profile_picture.filename)
-                        image_path = os.path.join(profile_picture.config['UPLOAD_FOLDER'], image_filename)
+                        image_path = os.path.join(current_app.config['UPLOAD_FOLDER'], image_filename)
                         if not os.path.exists(os.path.dirname(image_path)):
                             os.makedirs(os.path.dirname(image_path))
                         profile_picture.save(image_path)
+                        image_filename = image_filename
                     else:
                         error = 'File type not allowed.'
                         raise ValueError(error)
 
                 db.execute(
-                    "INSERT INTO user (username, password, firstname, lastname, email, gender, age, profile_picture) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-                    (username, generate_password_hash(password), firstname, lastname, email, gender, age, profile_picture),
+                    "INSERT INTO user (username, password, firstname, lastname, email, gender, age, profile_picture) VALUES (?, ?, ?, ?, ?, ?, ?, ?) ",
+                    (username, generate_password_hash(password), firstname, lastname, email, gender, age, image_filename)
                 )
                 db.commit()
                 return redirect(url_for('index'))
@@ -72,6 +73,7 @@ def register():
         flash(error)
     
     return render_template('auth/register.html')
+
 
 @bp.route('/login', methods=['GET', 'POST'])
 def login():

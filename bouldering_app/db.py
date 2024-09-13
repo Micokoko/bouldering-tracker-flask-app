@@ -21,16 +21,18 @@ def close_db(e=None):
         db.close()
 
 def init_db():
-    db = get_db()
+    try:
+        db = get_db()
+        db.executescript('''
+            DROP TABLE IF EXISTS user;
+            DROP TABLE IF EXISTS boulder;
+            DROP TABLE IF EXISTS attempt
+        ''')
+        with current_app.open_resource('schema.sql') as f:
+            db.executescript(f.read().decode('utf8'))
+    except sqlite3.Error as e:
+        print(f"An error occurred: {e}")
 
-    db.executescript('''
-        DROP TABLE IF EXISTS user;
-        DROP TABLE IF EXISTS boulder;
-        DROP TABLE IF EXISTS attempt
-    ''')
-
-    with current_app.open_resource('schema.sql') as f:
-        db.executescript(f.read().decode('utf8'))
 
 @click.command('init-db')
 @with_appcontext
