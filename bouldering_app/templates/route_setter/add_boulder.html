@@ -1,52 +1,61 @@
 {% extends 'base.html' %}
 
-
-
 {% block content %}
-    <div class="d-inline-flex flex-column align-items-center justify-content-center">
-    <h1>Add boulder here</h1>
-
-    {% for message in get_flashed_messages() %}
-                    <div class=" font-italic alert alert-danger">{{ message }}</div>
+<section class="bg-gray-50 dark:bg-gray-900">
+    <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+        <div class="w-full bg-white rounded-lg shadow dark:border sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+            <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
+                <div class="flex items-center justify-center">
+                    <h1 class="text-3xl font-bold leading-tight tracking-tight text-gray-900 dark:text-white"
+                        style="font-family: 'Inconsolata', monospace; font-optical-sizing: auto; font-weight: 300; font-style: normal;">
+                        Add Boulder
+                    </h1>
+                </div>
+                
+                {% for message in get_flashed_messages() %}
+                <div class="font-italic alert alert-danger text-red-600 dark:text-red-400">{{ message }}</div>
                 {% endfor %}
-
-    <form class="mt-15" style="margin-top: 20px" method="post" action="{{ url_for('create_boulder.create_boulder_form') }}" enctype="multipart/form-data">
-        <div class="form-group">
-            <label for="name">name</label>
-            <input type="text" name="name" id="name" class="form-control" placeholder="Name the boulder" required>
+                
+                <form class="space-y-4 md:space-y-6" method="post" action="{{ url_for('create_boulder.create_boulder_form') }}" enctype="multipart/form-data">
+                    <div>
+                        <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Boulder Name</label>
+                        <input type="text" name="name" id="name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Name the boulder" required>
+                    </div>
+                    
+                    <div>
+                        <label for="color" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Color of holds</label>
+                        <input type="color" name="color" id="color" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-24 h-10 block dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" value="{{ boulder['color'] }}" required>
+                    </div>
+                    
+                    <div>
+                        <label for="difficulty" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Difficulty (V scale)</label>
+                        <input type="number" name="difficulty" id="difficulty" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Set difficulty" required>
+                    </div>
+                    
+                    <div>
+                        <label for="numberofmoves" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Number of Moves</label>
+                        <input type="number" name="numberofmoves" id="numberofmoves" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Set number of moves" required>
+                    </div>
+                    
+                    <div>
+                        <label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description</label>
+                        <textarea name="description" id="description" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" rows="4" placeholder="Describe the boulder..." required></textarea>
+                    </div>
+                    
+                    <div>
+                        <label for="boulder_image" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Upload Image</label>
+                        <input type="file" name="boulder_image" id="boulder_image" accept="image/*" class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                    </div>
+                    
+                    <div>
+                        <label for="set_date" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Set Date</label>
+                        <input type="date" id="set_date" name="set_date" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>
+                    </div>
+                    
+                    <button type="submit" class="w-full px-4 py-2 mt-4 font-semibold text-white bg-blue-500 hover:bg-blue-600 rounded-lg">Post Boulder</button>
+                </form>
+            </div>
         </div>
-
-        <div class="form-group">
-            <label for="color">Color</label>
-            <input type="color" name="color" id="color" class="form-control" placeholder="Set color" required>
-        </div>
-        <div class="form-group">
-            <label for="difficulty">Difficulty (V scale)</label>
-            <input type="number" name="difficulty" id="difficulty" class="form-control" placeholder="Set difficulty" required pattern="\d{1,2}">
-        </div>
-        <div class="form-group">
-            <label for="numberofmoves">Moves</label>
-            <input type="number" name="numberofmoves" id="numberofmoves" class="form-control" placeholder="Set number of moves" required pattern="\d{1,2}">
-        </div>
-
-        <div class="form-group">
-            <label for="description">Description:</label>
-            <textarea name="description"></textarea>
-        </div>
-
-        <div class="form-group">
-            <label for="boulder_image">Upload Image:</label>
-            <input type="file" name="boulder_image" accept="image/*">
-        </div>
-
-        <div class="form-group">
-            <label for="set_date">Set Date</label>
-            <input type="date" id="set_date" name="set_date" required>
-        </div>
-        
-        <button type="submit" class="btn btn-primary">Post</button>
-    </form>
-
-</div>
-{% endblock  %}
-    
+    </div>
+</section>
+{% endblock %}

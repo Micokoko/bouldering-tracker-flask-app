@@ -1,44 +1,49 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
-<div class="d-inline-flex flex-column align-items-center justify-content-center">
-
-    <h1>Update Boulder</h1>
-    <form method="post" enctype="multipart/form-data">
-        <div class="form-group">
-            <label for="name">Name</label>
-            <input type="text" name="name" id="name" class="form-control" value="{{ boulder['name'] }}" required>
+<section class="bg-gray-50 dark:bg-gray-900">
+<div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+    <div class="w-full bg-white rounded-lg shadow dark:border sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+        <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
+        <div class="flex items-center justify-center">
+            <h1 class="text-3xl font-bold leading-tight tracking-tight text-gray-900 dark:text-white"
+                style="font-family: 'Inconsolata', monospace; font-optical-sizing: auto; font-weight: 300; font-style: normal;">
+                Update Boulder
+            </h1>
         </div>
-        <div class="form-group">
-            <label for="color">Color</label>
-            <input type="color" name="color" id="color" class="form-control" value="{{ boulder['color'] }}" required>
+        <form method="post" enctype="multipart/form-data" class="space-y-4 md:space-y-6">
+            <div>
+                <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Name</label>
+                <input type="text" name="name" id="name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" value="{{ boulder['name'] }}" required>
+            </div>
+            <div>
+                <label for="color" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Color of holds</label>
+                <input type="color" name="color" id="color" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-24 h-10 block dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" value="{{ boulder['color'] }}" required>
+            </div>
+            <div>
+                <label for="difficulty" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Difficulty</label>
+                <input type="number" name="difficulty" id="difficulty" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" value="{{ boulder['difficulty'] }}" required>
+            </div>
+            <div>
+                <label for="numberofmoves" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Number of Moves</label>
+                <input type="number" name="numberofmoves" id="numberofmoves" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" value="{{ boulder['numberofmoves'] }}" required>
+            </div>
+            <div>
+                <label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description</label>
+                <textarea name="description" id="description" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"></textarea>
+            </div>
+            <div>
+                <label for="boulder_image" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Upload Image</label>
+                <input type="file" name="boulder_image" accept="image/*" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white">
+            </div>
+            <div>
+                <label for="set_date" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Set Date</label>
+                <input type="date" id="set_date" name="set_date" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" required>
+            </div>
+            <button type="submit" class="w-full px-4 py-2 font-semibold text-white bg-blue-500 hover:bg-blue-600 rounded-lg">Update Boulder</button>
+        </form>
         </div>
-        <div class="form-group">
-            <label for="difficulty">Difficulty</label>
-            <input type="number" name="difficulty" id="difficulty" class="form-control" value="{{ boulder['difficulty'] }}" required>
-        </div>
-        <div class="form-group">
-            <label for="numberofmoves">Number of Moves</label>
-            <input type="number" name="numberofmoves" id="numberofmoves" class="form-control" value="{{ boulder['numberofmoves'] }}" required>
-        </div>
-
-        <div class="form-group">
-            <label for="description">Description:</label>
-            <textarea name="description"></textarea>
-        </div>
-
-        <div class="form-group">
-            <label for="boulder_image">Upload Image:</label>
-            <input type="file" name="boulder_image" accept="image/*">
-        </div>
-
-        <div class="form-group">
-            <label for="set_date">Set Date</label>
-            <input type="date" id="set_date" name="set_date" required>
-        </div>
-
-        <button type="submit" class="btn btn-primary">Update Boulder</button>
-    </form>
+    </div>
 </div>
+</section>
 {% endblock %}

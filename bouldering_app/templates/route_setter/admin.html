@@ -2,44 +2,43 @@
 
     {% block content %}
 
-    <section class="content">
+    <section class="p-6 bg-gray-50 dark:bg-gray-800 mb-16">
     <header>
-        <h1>Welcome, Route setter!</h1>
+        <h1 class="text-3xl font-bold mb-6">Welcome, Route setter!</h1>
     </header>
         
-    <p>Your profile page is under construction.</p>
 
-    <h1>All Boulders</h1>
-
+    <h1 class="text-2xl font-bold mb-6">All Boulders</h1>
+    <div class="mb-6 bg-white dark:bg-gray-900 shadow-md rounded-lg overflow-y-auto max-h-[75vh]">
     {% if boulders %}
-        <table class="table table-striped table-bordered">
-        <thead>
+        <table class="w-full text-left text-sm text-gray-500 dark:text-gray-400">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
             <tr>
-            <th class="text-center">Set Date</th>
-            <th class="text-center">Name</th>
-            <th class="text-center">Color of holds</th>
-            <th class="text-center">Difficulty</th>
-            <th class="text-center">Number of Moves</th>
-            <th class="text-center">Description</th>
-            <th class="text-center">Edit</th>
+            <th class="px-6 py-3">Set Date</th>
+            <th class="px-6 py-3">Name</th>
+            <th class="px-6 py-3">Color of holds</th>
+            <th class="px-6 py-3">Difficulty</th>
+            <th class="px-6 py-3">Number of Moves</th>
+            <th class="px-6 py-3">Description</th>
+            <th class="px-6 py-3">Edit</th>
             </tr>
         </thead>
         <tbody>
             {% for boulder in boulders %}
-            <tr>
-            <td>{{ boulder.set_date }}</td>
-            <td>{{ boulder.name }}</td>
-            <td class="align-middle">
+            <tr class="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700">
+            <td class="px-6 py-4">{{ boulder.set_date }}</td>
+            <td class="px-6 py-4">{{ boulder.name }}</td>
+            <td class="px-6 py-4">
                 <div class="card" style="background-color: {{ boulder.color }}; width: 30px; height: 30px; border-radius: 50%;"></div>
             </td>
-            <td>V{{ boulder.difficulty }}</td>
-            <td>{{ boulder.numberofmoves }}</td>
-            <td>{{ boulder.description }}</td>
-            <td>
-                <a class="btn btn-warning" href="{{ url_for('create_boulder.update_boulder_form', id=boulder.id) }}">Update</a>
+            <td class="px-6 py-4">V{{ boulder.difficulty }}</td>
+            <td class="px-6 py-4">{{ boulder.numberofmoves }}</td>
+            <td class="px-6 py-4">{{ boulder.description }}</td>
+            <td class="px-6 py-4">
+                <a class="focus:outline-none text-gray-700 bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-3 py-2.5 me-2 mb-2 dark:focus:ring-yellow-900" href="{{ url_for('create_boulder.update_boulder_form', id=boulder.id) }}">Update</a>
                 <br>
                 <form action="{{ url_for('create_boulder.delete_boulder', id=boulder.id) }}" method="post">
-                <button type="submit" class="btn btn-danger">Delete</button>
+                <button type="submit" class="focus:outline-none text-gray-700 bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Delete</button>
                 </form>
             </td>
             </tr>
@@ -50,7 +49,10 @@
         <p>No boulders found.</p>
     {% endif %}
 
-    <a href="{{ url_for('create_boulder.add_boulder_page') }}" class="btn btn-secondary">ADD BOULDER</a>
-    <a href="{{ url_for('auth.logout') }}" class="btn btn-secondary">Log Out</a>
-    </section>
+</div>
+    <a href="{{ url_for('create_boulder.add_boulder_page') }}" class="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">ADD BOULDER</a>
+    <a href="{{ url_for('auth.logout') }}" class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Log Out</a>
+
+
+</section>
     {% endblock %}
