@@ -2,7 +2,7 @@
 
     {% block content %}
 
-    <section class="p-6 bg-gray-50 dark:bg-gray-800 mb-16">
+    <section class="p-6 bg-gray-50 dark:bg-gray-800 mb-16 ">
     <header>
         <h1 class="text-3xl font-bold mb-6">Welcome, Route setter!</h1>
     </header>
@@ -50,7 +50,7 @@
     {% endif %}
 
 </div>
-    <a href="{{ url_for('create_boulder.add_boulder_page') }}" class="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">ADD BOULDER</a>
+    <a href="{{ url_for('create_boulder.create_boulder_form') }}" class="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">ADD BOULDER</a>
     <a href="{{ url_for('auth.logout') }}" class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Log Out</a>
 
 

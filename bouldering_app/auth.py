@@ -2,13 +2,20 @@ import functools
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
 )
+
+import os
 from werkzeug.security import check_password_hash, generate_password_hash
+from werkzeug.utils import secure_filename
 from bouldering_app.db import get_db
 
 from datetime import datetime, date
 
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @bp.route('/register', methods=('GET', 'POST'))
 def register():
@@ -20,6 +27,7 @@ def register():
         email = request.form['email']
         gender = request.form['gender']
         age = request.form['age']
+        profile_picture = request.files.get('profile_picture')
         db = get_db()
         error = None
 
@@ -37,12 +45,24 @@ def register():
             error = 'Gender is required.'
         elif not age:
             error = 'Age is required.'
-
+            
         if error is None:
             try:
+                image_filename = None
+                if profile_picture and profile_picture.filename:
+                    if allowed_file(profile_picture.filename):
+                        image_filename = secure_filename(profile_picture.filename)
+                        image_path = os.path.join(profile_picture.config['UPLOAD_FOLDER'], image_filename)
+                        if not os.path.exists(os.path.dirname(image_path)):
+                            os.makedirs(os.path.dirname(image_path))
+                        profile_picture.save(image_path)
+                    else:
+                        error = 'File type not allowed.'
+                        raise ValueError(error)
+
                 db.execute(
-                    "INSERT INTO user (username, password, firstname, lastname, email, gender, age) VALUES (?, ?, ?, ?, ?, ?, ?)",
-                    (username, generate_password_hash(password), firstname, lastname, email, gender, age),
+                    "INSERT INTO user (username, password, firstname, lastname, email, gender, age, profile_picture) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                    (username, generate_password_hash(password), firstname, lastname, email, gender, age, profile_picture),
                 )
                 db.commit()
                 return redirect(url_for('index'))
@@ -131,13 +151,10 @@ def user_page():
     db = get_db()
     user_id = g.user['id']
 
-    # Fetch all boulders
     boulders = db.execute('SELECT * FROM boulder').fetchall()
     
-    # Fetch attempts for the current user
     attempts = db.execute('SELECT * FROM attempt WHERE user_id = ?', (user_id,)).fetchall()
 
-    # Format the attempt dates
     formatted_attempts = []
     for attempt in attempts:
         attempt_date = attempt['attempt_date']
@@ -146,15 +163,12 @@ def user_page():
         formatted_attempt['attempt_date'] = formatted_date
         formatted_attempts.append(formatted_attempt)
 
-    # Separate the boulders based on difficulty
     ranked_boulders = []
     non_ranked_boulders = []
 
     for boulder in boulders:
-        # Find the user's attempt (if any) for this boulder
         user_attempt = next((attempt for attempt in attempts if attempt['boulder_id'] == boulder['id']), None)
 
-        # Only consider boulders with incomplete status or no attempt
         if not user_attempt or user_attempt['status'] == 'incomplete':
             if boulder['difficulty'] >= 6:
                 ranked_boulders.append({
@@ -167,7 +181,6 @@ def user_page():
                     'attempt': user_attempt
                 })
 
-    # Calculate the highest grade climbed and flashed
     highest_grade_climbed = max(
         (boulder['difficulty'] for boulder in boulders
         if any(attempt['boulder_id'] == boulder['id'] and attempt['status'] in ['completed', 'flashed']
@@ -182,7 +195,6 @@ def user_page():
         default=0
     )
 
-    # Count boulders completed
     boulders_completed = len(set(
         attempt['boulder_id'] for attempt in attempts
         if attempt['status'] in ['completed', 'flashed']

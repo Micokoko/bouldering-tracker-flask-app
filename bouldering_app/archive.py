@@ -14,18 +14,13 @@ def archive():
     user_id = g.user['id']
     db = get_db()
     
-    # Fetch all boulders
     boulders = db.execute('SELECT * FROM boulder').fetchall()
-    
-    # Fetch all attempts for the user
     attempts = db.execute('SELECT * FROM attempt WHERE user_id = ?', (user_id,)).fetchall()
     
     completed_boulders = []
     flashed_boulders = []
 
-    # Categorize boulders based on status
     for boulder in boulders:
-        # Find attempts for the current boulder
         attempts_for_boulder = [a for a in attempts if a['boulder_id'] == boulder['id']]
         if attempts_for_boulder:
             attempt = attempts_for_boulder[0]

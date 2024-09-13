@@ -12,6 +12,7 @@ CREATE TABLE user (
     password TEXT NOT NULL,
     gender TEXT NOT NULL,
     age TEXT NOT NULL,
+    profile_picture TEXT,
     highest_grade_climbed INTEGER DEFAULT 0,  
     highest_grade_flashed INTEGER DEFAULT 0   
 );

@@ -1,22 +1,23 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<section class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+<section class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0 w-full">
     <header class="">
-        <h1 class="mt-5 text-3xl font-bold dark:text-white">{{ 'Edit' if attempt else 'Log' }} ascent for:</h1> 
-        <h2 class="mb-5 text-4xl font-bold dark:text-white">{{ boulder.name }}</h2>
-        
+        <h3 class="mt-5 text-1xl font-light dark:text-white">{{ 'Edit' if attempt else 'Log' }} ascent for:</h3> 
+        <h1 class="mb-5 text-4xl font-bold dark:text-white">{{ boulder.name }}</h1>
+        <div class="w-full">
         {% if boulder.image %}
-            <img class="h-auto max-w-xs rounded-lg"  src="{{ url_for('static', filename='uploads/' + boulder.image) }}" style="width: 500px;" alt="{{ boulder.name }}">
+            <img class="h-auto w-auto rounded-lg"  src="{{ url_for('static', filename='uploads/' + boulder.image) }}" style="width: 500px;" alt="{{ boulder.name }}">
 
         {% else %}
-            <img class="h-auto max-w-xs rounded-lg"  src="{{ url_for('static', filename='images/spray-wall.jpg') }}" style="width: 500px;" alt="Spray Wall">
+            <img class="h-auto w-auto rounded-lg"  src="{{ url_for('static', filename='images/spray-wall.jpg') }}" style="width: 500px;" alt="Spray Wall">
         {% endif %}
         <p class="mt-6">Boulder description:</p>
-        <p class="mb-6">{{ boulder.description }}</p>
+        <p class="mb-6 italic">{{ boulder.description }}</p>
+        </div>
     </header>
     
-    <form class="" method="post" action="{{ url_for('log_ascent.log_ascent_user', id=boulder.id) }}">
+    <form class="w-full" method="post" action="{{ url_for('log_ascent.log_ascent_user', id=boulder.id) }}">
         {% if attempt %}
             <input type="hidden" name="attempt_id" value="{{ attempt.id }}">
         {% endif %}
