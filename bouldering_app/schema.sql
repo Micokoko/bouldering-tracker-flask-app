@@ -38,7 +38,7 @@ CREATE TABLE attempt (
     user_id INTEGER NOT NULL,
     boulder_id INTEGER NOT NULL,
     moves_completed INTEGER,
-    difficulty INTEGER NOT NULL,  -- Store the difficulty of the boulder when this attempt was made
+    difficulty INTEGER NOT NULL,
     FOREIGN KEY (user_id) REFERENCES user(id),
     FOREIGN KEY (boulder_id) REFERENCES boulder(id)
 );

@@ -11,6 +11,7 @@ def leaderboards():
         SELECT
             boulder.id AS boulder_id,
             boulder.name AS boulder_name,
+            boulder.image AS boulder_image,
             COALESCE(user.username, 'No Attempts') AS climber,
             COALESCE(attempt.number_of_attempts, 0) AS number_of_attempts,
             RANK() OVER (
@@ -26,12 +27,12 @@ def leaderboards():
         """
     ).fetchall()
     
-    # Organize rankings by boulder
+
     boulder_rankings = {}
     for row in rankings:
         boulder_id = row['boulder_id']
         if boulder_id not in boulder_rankings:
-            boulder_rankings[boulder_id] = {'name': row['boulder_name'], 'data': []}
+            boulder_rankings[boulder_id] = {'name': row['boulder_name'],'image':row['boulder_image'], 'data': []}
         boulder_rankings[boulder_id]['data'].append({
             'climber': row['climber'],
             'number_of_attempts': row['number_of_attempts'],
