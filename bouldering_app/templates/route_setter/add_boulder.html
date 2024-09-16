@@ -18,22 +18,22 @@
                 
                 <form class="space-y-4 md:space-y-6" method="post" action="{{ url_for('create_boulder.create_boulder_form') }}" enctype="multipart/form-data">
                     <div>
-                        <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Boulder Name</label>
+                        <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Boulder Name*</label>
                         <input type="text" name="name" id="name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Name the boulder" required>
                     </div>
                     
                     <div>
-                        <label for="color" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Color of holds</label>
+                        <label for="color" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Color of holds*</label>
                         <input type="color" name="color" id="color" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-24 h-10 block dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" required>
                     </div>
                     
                     <div>
-                        <label for="difficulty" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Difficulty (V scale)</label>
+                        <label for="difficulty" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Difficulty (V scale)*</label>
                         <input type="number" name="difficulty" id="difficulty" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Set difficulty" required>
                     </div>
                     
                     <div>
-                        <label for="numberofmoves" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Number of Moves</label>
+                        <label for="numberofmoves" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Number of Moves*</label>
                         <input type="number" name="numberofmoves" id="numberofmoves" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Set number of moves" required>
                     </div>
                     
@@ -44,11 +44,11 @@
                     
                     <div>
                         <label for="boulder_image" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Upload Image</label>
-                        <input type="file" name="boulder_image" id="boulder_image" accept="image/*" class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                        <input type="file" name="boulder_image" id="boulder_image" accept="image/*" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400">
                     </div>
                     
                     <div>
-                        <label for="set_date" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Set Date</label>
+                        <label for="set_date" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Set Date*</label>
                         <input type="date" id="set_date" name="set_date" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>
                     </div>
                     
