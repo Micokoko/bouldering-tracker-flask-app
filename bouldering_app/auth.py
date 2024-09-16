@@ -22,6 +22,7 @@ def register():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+        confirm_password = request.form['confirm-password']
         firstname = request.form['firstname']
         lastname = request.form['lastname']
         email = request.form['email']
@@ -46,6 +47,10 @@ def register():
         elif not age:
             error = 'Age is required.'
             
+        elif password != confirm_password:
+            error = 'Passwords do not match'
+
+            
         if error is None:
             try:
                 image_filename = None
@@ -68,7 +73,7 @@ def register():
                 db.commit()
                 return redirect(url_for('index'))
             except db.IntegrityError:
-                error = f"User {username} is already registered."
+                error = f"User {username} is already taken."
         
         flash(error)
     

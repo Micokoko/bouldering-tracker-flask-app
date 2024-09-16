@@ -5,7 +5,7 @@
             <h1 class="text-3xl font-bold mb-6" >Completed Boulders</h1>
                 {% if archived_boulders %}
                     {% for boulder in archived_boulders %}
-                    <div class="flex flex-col items-center border border-gray-200 rounded-lg overflow-hidden shadow dark:bg-gray-800 w-full h-auto mb-4 text-left mx-auto">
+                    <div class="flex flex-col items-center border dark:border-gray-700 rounded-lg overflow-hidden shadow dark:bg-gray-800 w-full h-auto mb-4 text-left mx-auto">
                         {% if boulder.image %}
                         <img class="w-full h-auto pt-4 md:w-48 md:h-48" src="{{ url_for('static', filename='uploads/' + boulder.image) }}" alt="{{ boulder.name }}">
                         {% else %}

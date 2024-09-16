@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="flex flex-col items-center justify-center w-full h-full p-4"> 
+<div class="flex flex-col items-center justify-center w-full h-full p-4 mb-20"> 
     <section class="flex flex-col items-center justify-center w-full h-full p-4">
         <div class="w-full flex justify-center max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 px-4">
             <div class="mt-5 flex flex-col items-center pb-10 w-full max-w-xs"> 
@@ -18,86 +18,42 @@
                 {% endif %}
 
                 <header class="text-center">
-                    <h1 class="mb-1 text-xl font-medium text-gray-900 dark:text-white">{{ g.user['firstname'] }} {{ g.user['Lastname'] }}</h1>
+                    <h1 class="mb-1 text-xl font-medium text-gray-900 dark:text-white">{{ g.user['firstname'] }} {{ g.user['lastname'] }}</h1>
                     <div class="flex justify-center">
                         <h1 class="mb-1 text-s font-medium text-gray-900 dark:text-white">@{{ g.user['username'] }}</h1>
-                        <a href="{{ url_for('auth.edit_user_details', id=user['id']) }}">
+                        <a href="{{ url_for('auth.edit_user_details', id=g.user['id']) }}">
                         <svg class="ml-1 h-6 w-6 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <circle cx="12" cy="12" r="3" />
                             <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
                         </svg>
                         </a>
                     </div>
-                        <div class="flex space-x-3 mt-3 mb-3">
-                            <div class="inline w-36 p-3 border border-gray-200 rounded-lg shadow">
+                    <div class="dark:bg-gray-700 p-4 rounded-lg">
+                        <div class="flex space-x-3 mt-3">
+                            <div class="inline w-36 rounded-lg">
                                 Highest grade climbed: 
                                 <span class="font-bold text-2xl">v{{ highest_grade_climbed }}</span>
                             </div>
-                            <div class="inline w-36 p-3 border border-gray-200 rounded-lg shadow">
+                            <div class="inline w-36 rounded-lg">
                                 Highest grade flashed: 
                                 <span class="font-bold text-2xl">v{{ highest_grade_flashed }}</span>
                             </div>
+                        </div>
+                        <div class="inline w-36 p-3 rounded-lg">
+                            Total boulders sent: <span class="font-bold text-2xl">{{ boulders_completed }}</span>
+                        </div>
                     </div>
-                <div class="inline w-36 p-3 mt-4 border border-gray-200 rounded-lg shadow">
-                    Total boulders sent: <span class="font-bold text-2xl">{{ boulders_completed }}</span>
-                </div>
+                </header>
             </div>
         </div>
     </section>
+
 <!-- Ranked Boulders -->
 <h1 class="font-bold text-2xl">Ranked Boulders (V6 and above)</h1>
 <section class="mt-5 w-full px-6">
     {% if ranked_boulders %}
         {% for boulder in ranked_boulders %}
-        <div class="flex flex-col items-center border border-gray-200 rounded-lg overflow-hidden shadow dark:bg-gray-800 w-full h-auto mb-4 text-left mx-auto">
-            <h5 class="text-xl font-semibold p-4 border-b border-gray-200 dark:border-gray-700">{{ boulder.name }} </h5>
-            {% if boulder.image %}
-            <img class="w-full h-auto pt-4 md:w-48 md:h-48" src="{{ url_for('static', filename='uploads/' + boulder.image) }}" alt="{{ boulder.name }}">
-            {% else %}
-            <img class="w-full h-auto pt-4 md:w-48 md:h-48" src="{{ url_for('static', filename='images/spray-wall.jpg') }}" alt="Spray Wall">
-            {% endif %}
-            <div class="flex flex-col justify-between p-4 leading-normal w-full">
-                <p class="mb-1 font-normal text-gray-700 dark:text-gray-400">Description: {{ boulder.description }}</p>
-                <p class="mb-1 font-normal text-gray-700 dark:text-gray-400">Difficulty: V{{ boulder.difficulty }}</p>
-                <p class="mb-1 font-normal text-gray-700 dark:text-gray-400">Color of holds: 
-                    <div class="ml-2 inline-block" style="background-color: {{ boulder.color }}; width: 30px; height: 30px; border-radius: 50%;"></div>
-                </p>
-                <p class="mb-1 font-normal text-gray-700 dark:text-gray-400">Number of moves: {{ boulder.numberofmoves }}</p>
-                {% set attempt = boulder.attempt %}
-                {% if attempt %}
-                    <p class="mb-1 font-normal text-gray-700 dark:text-gray-400">Status:</p>
-                    <p class="mb-1 font-normal text-gray-700 dark:text-gray-400">
-                        {% if attempt.status == 'incomplete' %}
-                            {{ attempt.number_of_attempts }} attempts - Incomplete ({{ attempt.moves_completed }} / {{ boulder.numberofmoves }} moves)
-                        {% else %}
-                            Completed
-                        {% endif %}
-                    </p>
-                    <p class="mb-1 font-normal text-gray-700 dark:text-gray-400">Attempt date: {{ attempt.attempt_date }}</p>
-                    <p class="text-center mt-5 mb-3">
-                        <a class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center" href="{{ url_for('log_ascent.log_ascent_user', id=boulder.id) }}">Update Log</a>
-                    </p>
-                {% else %}
-                    <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">No log record yet</p>
-                    <p class="text-center mt-5 mb-3">
-                        <a class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center" href="{{ url_for('log_ascent.log_ascent_user', id=boulder.id) }}">Log</a>
-                    </p>
-                {% endif %}
-            </div>
-        </div>
-        {% endfor %}
-    {% else %}
-        <p>No ranked boulders found.</p>
-    {% endif %}
-</section>
-
-<!-- Non-Ranked Boulders -->
-<h1 class="ml-4 font-bold text-2xl mt-5">Non-Ranked Boulders (V5 and below)</h1>
-<div class="mb-60 w-full px-6">
-<section class="mt-5 w-full">
-    {% if non_ranked_boulders %}
-        {% for boulder in non_ranked_boulders %}
-        <div class="flex flex-col items-center border border-gray-200 rounded-lg overflow-hidden shadow dark:bg-gray-800 w-full h-auto mb-4 text-left mx-auto">
+        <div class="flex flex-col items-center border dark:border-gray-700 rounded-lg overflow-hidden shadow dark:bg-gray-800 w-full h-auto mb-4 text-left mx-auto">
             <h5 class="text-xl font-semibold p-4 border-b border-gray-200 dark:border-gray-700">{{ boulder.name }}</h5>
             {% if boulder.image %}
             <img class="w-full h-auto pt-4 md:w-48 md:h-48" src="{{ url_for('static', filename='uploads/' + boulder.image) }}" alt="{{ boulder.name }}">
@@ -126,19 +82,67 @@
                         <a class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center" href="{{ url_for('log_ascent.log_ascent_user', id=boulder.id) }}">Update Log</a>
                     </p>
                 {% else %}
-                    <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">No log record yet</p>
+                    <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">No log has been made.</p>
                     <p class="text-center mt-5 mb-3">
-                        <a class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center" href="{{ url_for('log_ascent.log_ascent_user', id=boulder.id) }}">Log</a>
+                        <a class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center" href="{{ url_for('log_ascent.log_ascent_user', id=boulder.id) }}">Log an Attempt</a>
                     </p>
                 {% endif %}
             </div>
         </div>
         {% endfor %}
     {% else %}
-        <p>No non-ranked boulders found.</p>
+        <p>No ranked boulders available.</p>
+    {% endif %}
+</section>
+
+<!-- Non-Ranked Boulders -->
+<h1 class="font-bold text-2xl">Non-Ranked Boulders (V5 and below)</h1>
+<section class="mt-5 w-full px-6">
+    {% if non_ranked_boulders %}
+        {% for boulder in non_ranked_boulders %}
+        <div class="flex flex-col items-center border dark:border-gray-700 rounded-lg overflow-hidden shadow dark:bg-gray-800 w-full h-auto mb-4 text-left mx-auto">
+            <h5 class="text-xl font-semibold p-4 border-b border-gray-200 dark:border-gray-700">{{ boulder.name }}</h5>
+            {% if boulder.image %}
+            <img class="w-full h-auto pt-4 md:w-48 md:h-48" src="{{ url_for('static', filename='uploads/' + boulder.image) }}" alt="{{ boulder.name }}">
+            {% else %}
+            <img class="w-full h-auto pt-4 md:w-48 md:h-48" src="{{ url_for('static', filename='images/spray-wall.jpg') }}" alt="Spray Wall">
+            {% endif %}
+            <div class="flex flex-col justify-between p-4 leading-normal w-full">
+                <p class="mb-1 font-normal text-gray-700 dark:text-gray-400">Description: {{ boulder.description }}</p>
+                <p class="mb-1 font-normal text-gray-700 dark:text-gray-400">Difficulty: V{{ boulder.difficulty }}</p>
+                <p class="mb-1 font-normal text-gray-700 dark:text-gray-400">Color of holds: 
+                    <div class="ml-2 inline-block" style="background-color: {{ boulder.color }}; width: 30px; height: 30px; border-radius: 50%;"></div>
+                </p>
+                <p class="mb-1 font-normal text-gray-700 dark:text-gray-400">Number of moves: {{ boulder.numberofmoves }}</p>
+                {% set attempt = boulder.attempt %}
+                {% if attempt %}
+                    <p class="mb-1 font-normal text-gray-700 dark:text-gray-400">Status:</p>
+                    <p class="mb-1 font-normal text-gray-700 dark:text-gray-400">
+                        {% if attempt.status == 'incomplete' %}
+                            {{ attempt.number_of_attempts }} attempts - Incomplete ({{ attempt.moves_completed }} / {{ boulder.numberofmoves }} moves)
+                        {% else %}
+                            Completed
+                        {% endif %}
+                    </p>
+                    <p class="mb-1 font-normal text-gray-700 dark:text-gray-400">Attempt date: {{ attempt.attempt_date }}</p>
+                    <p class="text-center mt-5 mb-3">
+                        <a class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center" href="{{ url_for('log_ascent.log_ascent_user', id=boulder.id) }}">Update Log</a>
+                    </p>
+                {% else %}
+                    <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">No log has been made.</p>
+                    <p class="text-center mt-5 mb-3">
+                        <a class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center" href="{{ url_for('log_ascent.log_ascent_user', id=boulder.id) }}">Log an Attempt</a>
+                    </p>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p>No non-ranked boulders available.</p>
     {% endif %}
 </section>
 </div>
+
 
 
 <div class="fixed bottom-0 left-0 z-50 w-full h-16 bg-white border-t border-gray-200 dark:bg-gray-700 dark:border-gray-600">
