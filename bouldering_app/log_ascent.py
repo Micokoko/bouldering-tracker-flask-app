@@ -22,7 +22,6 @@ def log_ascent_user(id):
         'SELECT * FROM attempt WHERE boulder_id = ? AND user_id = ?', (id, g.user['id'])
     ).fetchone()
 
-    # Rank users based on number of attempts for completed and flashed boulders with difficulty >= 6
     rankings = db.execute(
         """
         SELECT user.username, attempt.number_of_attempts,
@@ -53,11 +52,14 @@ def log_ascent_user(id):
             moves_completed = int(moves_completed_str)
             attempt_date = datetime.strptime(attempt_date_str, '%Y-%m-%d').date()
 
+            if attempt_date > datetime.today().date():
+                flash('Attempt date cannot be future dated.', 'danger')
+                return render_template('climber/log_ascent.html', boulder=boulder, attempt=attempt, rankings=rankings)
+
             if moves_completed > boulder['numberofmoves']:
                 flash('Moves completed cannot be greater than the total number of moves.', 'danger')
                 return render_template('climber/log_ascent.html', boulder=boulder, attempt=attempt, rankings=rankings)
 
-            # Determine the status based on the moves completed and number of attempts
             if number_of_attempts == 1 and moves_completed == boulder['numberofmoves']:
                 status = 'flashed'
             elif moves_completed == boulder['numberofmoves']:
@@ -67,7 +69,6 @@ def log_ascent_user(id):
 
             print(f"DEBUG: Determined Status (for DB): {status}")
 
-            # Update or insert the attempt
             if attempt:
                 db.execute(
                     """
@@ -102,6 +103,7 @@ def log_ascent_user(id):
             flash(f"Unexpected Error: {e}", 'danger')
             print(f"DEBUG: Unexpected Error: {e}")
 
+
     return render_template('climber/log_ascent.html', boulder=boulder, attempt=attempt, rankings=rankings)
 
 
@@ -113,7 +115,7 @@ def archive():
     db = get_db()
     user_id = g.user['id']
 
-    # Query to get completed and flashed boulders
+
     completed_flashed_boulders = db.execute(
         '''
         SELECT boulder.* 
@@ -124,7 +126,7 @@ def archive():
         (user_id,)
     ).fetchall()
 
-    # Query to get attempts for these boulders
+
     attempts = db.execute(
         '''
         SELECT * 
@@ -134,7 +136,8 @@ def archive():
         (user_id,)
     ).fetchall()
 
-    # Format attempts dates
+
+
     formatted_attempts = []
     for attempt in attempts:
         attempt_date = attempt['attempt_date']
@@ -142,19 +145,16 @@ def archive():
 
         if isinstance(attempt_date, str):
             try:
-                # Convert string to datetime.date
                 formatted_attempt['attempt_date'] = datetime.strptime(attempt_date, '%Y-%m-%d').strftime('%Y-%m-%d')
             except ValueError:
                 formatted_attempt['attempt_date'] = 'Invalid Date'
         elif isinstance(attempt_date, datetime):
-            # Convert datetime to string
             formatted_attempt['attempt_date'] = attempt_date.strftime('%Y-%m-%d')
         elif isinstance(attempt_date, date):
-            # Convert date to string
+
             formatted_attempt['attempt_date'] = attempt_date.strftime('%Y-%m-%d')
         else:
-            formatted_attempt['attempt_date'] = 'N/A'  # Handle other unexpected data types
-
+            formatted_attempt['attempt_date'] = 'N/A' 
         formatted_attempts.append(formatted_attempt)
 
     return render_template(

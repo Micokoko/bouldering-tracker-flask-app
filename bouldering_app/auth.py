@@ -235,7 +235,6 @@ def edit_user_details(id):
     db = get_db()
     user = db.execute('SELECT * FROM user WHERE id = ?', (id,)).fetchone()
 
-
     if user is None:
         flash('User not found.')
         return redirect(url_for('auth.user_page'))
@@ -243,8 +242,17 @@ def edit_user_details(id):
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+        confirm_password = request.form['confirm-password']
         profile_picture = request.files.get('profile_picture')
         error = None
+
+
+        existing_user = db.execute('SELECT id FROM user WHERE username = ? AND id != ?', (username, id)).fetchone()
+        if existing_user:
+            error = 'Username already exists. Please choose a different one.'
+            
+        elif password != confirm_password:
+            error = 'Passwords do not match'
 
         if error is None:
             try:
