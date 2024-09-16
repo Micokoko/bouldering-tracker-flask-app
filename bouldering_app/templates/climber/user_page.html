@@ -6,18 +6,18 @@
         <div class="w-full flex justify-center max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 px-4">
             <div class="mt-5 flex flex-col items-center pb-10 w-full max-w-xs"> 
                 {% if g.user['profile_picture'] %}
-                    <img class="w-24 h-24 rounded-full object-cover pt-4 md:w-48 md:h-48" 
+                    <img class="w-24 h-24 mb-3 rounded-full shadow-lg" 
                         src="{{ url_for('static', filename='uploads/' + g.user['profile_picture']) }}" 
                         alt="{{ g.user['firstname'] }} {{ g.user['lastname'] }} picture">
                 {% else %}
                     <div class="relative w-24 h-24 rounded-full bg-gray-100 dark:bg-gray-600 flex items-center justify-center">
-                        <svg class="w-16 h-16 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                        <svg class="w-24 h-24 mb-3 rounded-full shadow-lg" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
                         </svg>
                     </div>
                 {% endif %}
 
-                <header class="text-center">
+                <header class="text-center w-full h-full">
                     <h1 class="mb-1 text-xl font-medium text-gray-900 dark:text-white">{{ g.user['firstname'] }} {{ g.user['lastname'] }}</h1>
                     <div class="flex justify-center">
                         <h1 class="mb-1 text-s font-medium text-gray-900 dark:text-white">@{{ g.user['username'] }}</h1>
@@ -28,21 +28,22 @@
                         </svg>
                         </a>
                     </div>
-                    <div class="dark:bg-gray-700 p-4 rounded-lg">
-                        <div class="flex space-x-3 mt-3">
-                            <div class="inline w-36 rounded-lg">
+                    <div class="dark:bg-gray-700 p-4 rounded-lg mt-5 justify-right">
+                            <div class="rounded-lg">
                                 Highest grade climbed: 
                                 <span class="font-bold text-2xl">v{{ highest_grade_climbed }}</span>
                             </div>
-                            <div class="inline w-36 rounded-lg">
+                            <div class="rounded-lg">
                                 Highest grade flashed: 
                                 <span class="font-bold text-2xl">v{{ highest_grade_flashed }}</span>
                             </div>
-                        </div>
-                        <div class="inline w-36 p-3 rounded-lg">
-                            Total boulders sent: <span class="font-bold text-2xl">{{ boulders_completed }}</span>
-                        </div>
+                            <div class="rounded-lg">
+                                Total boulders sent: 
+                                <span class="font-bold text-2xl">{{ boulders_completed }}</span>
+                            </div>
+
                     </div>
+                    
                 </header>
             </div>
         </div>

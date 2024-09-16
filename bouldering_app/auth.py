@@ -251,7 +251,7 @@ def edit_user_details(id):
         if existing_user:
             error = 'Username already exists. Please choose a different one.'
             
-        elif password != confirm_password:
+        elif password and confirm_password is  password != confirm_password:
             error = 'Passwords do not match'
 
         if error is None:
