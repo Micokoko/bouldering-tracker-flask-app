@@ -1,5 +1,4 @@
 from flask import Blueprint, render_template
-from bouldering_app.db import get_db
 
 bp = Blueprint('leaderboards', __name__, url_prefix='/leaderboards')
 

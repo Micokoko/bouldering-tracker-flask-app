@@ -1,14 +1,15 @@
-import functools
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for, current_app
 )
-
 import os
 from werkzeug.security import check_password_hash, generate_password_hash
 from werkzeug.utils import secure_filename
-from bouldering_app.db import get_db
-
+from bouldering_app.models import db
+from bouldering_app.models import User, Boulder, Attempt
 from datetime import datetime, date
+import functools
+
+
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
@@ -29,7 +30,6 @@ def register():
         gender = request.form['gender']
         age = request.form['age']
         profile_picture = request.files.get('profile_picture')
-        db = get_db()
         error = None
 
         if not username:
@@ -46,11 +46,9 @@ def register():
             error = 'Gender is required.'
         elif not age:
             error = 'Age is required.'
-            
         elif password != confirm_password:
             error = 'Passwords do not match'
 
-            
         if error is None:
             try:
                 image_filename = None
@@ -61,23 +59,34 @@ def register():
                         if not os.path.exists(os.path.dirname(image_path)):
                             os.makedirs(os.path.dirname(image_path))
                         profile_picture.save(image_path)
-                        image_filename = image_filename
                     else:
                         error = 'File type not allowed.'
                         raise ValueError(error)
 
-                db.execute(
-                    "INSERT INTO user (username, password, firstname, lastname, email, gender, age, profile_picture) VALUES (?, ?, ?, ?, ?, ?, ?, ?) ",
-                    (username, generate_password_hash(password), firstname, lastname, email, gender, age, image_filename)
+                new_user = User(
+                    username=username,
+                    password=generate_password_hash(password),
+                    firstname=firstname,
+                    lastname=lastname,
+                    email=email,
+                    gender=gender,
+                    age=age,
+                    profile_picture=image_filename
                 )
-                db.commit()
+                
+                print(new_user.username)
+                
+                db.session.add(new_user)
+                db.session.commit()
                 return redirect(url_for('index'))
-            except db.IntegrityError:
-                error = f"User {username} is already taken."
+            except Exception as e:
+                error = str(e)
+        
         
         flash(error)
     
     return render_template('auth/register.html')
+
 
 
 @bp.route('/login', methods=['GET', 'POST'])
@@ -85,26 +94,21 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        db = get_db()
         error = None
 
-        user = db.execute(
-            'SELECT * FROM user WHERE username = ?', (username,)
-        ).fetchone()
-
-        
+        user = User.query.filter_by(username=username).first()
 
         if user is None:
             error = 'Username or password cannot be found'
-        elif not check_password_hash(user['password'], password):
+        elif not check_password_hash(user.password, password):
             error = 'Username or password cannot be found'
 
         if error is None:
             session.clear()
-            session['user_id'] = user['id']
-            if user['username'] == 'admin':
+            session['user_id'] = user.id
+            if user.username == 'admin':
                 return redirect(url_for('auth.admin'))
-            return redirect(url_for('auth.user_page')) 
+            return redirect(url_for('auth.user_page'))
 
         flash(error)
         return redirect(url_for('index'))
@@ -118,14 +122,13 @@ def load_logged_in_user():
     if user_id is None:
         g.user = None
     else:
-        g.user = get_db().execute(
-            'SELECT * FROM user WHERE id = ?', (user_id,)
-        ).fetchone()
+        g.user = User.query.get(user_id)
+
 
 @bp.route('/logout')
 def logout():
     session.clear()
-    return redirect(url_for('index'))  
+    return redirect(url_for('index'))
 
 def login_required(view):
     @functools.wraps(view)
@@ -136,8 +139,6 @@ def login_required(view):
         return view(**kwargs)
 
     return wrapped_view
-
-
 
 def format_date(date_value):
     if isinstance(date_value, str):
@@ -150,23 +151,19 @@ def format_date(date_value):
     else:
         return 'Invalid date'
 
-
-
 @bp.route('/user_page')
 @login_required
 def user_page():
-    db = get_db()
-    user_id = g.user['id']
-    boulders = db.execute('SELECT * FROM boulder').fetchall()
-    attempts = db.execute('SELECT * FROM attempt WHERE user_id = ?', (user_id,)).fetchall()
-    user = db.execute('SELECT * FROM user WHERE id = ?', (g.user['id'],)).fetchone()
-
+    user_id = g.user.id
+    boulders = Boulder.query.all()
+    attempts = Attempt.query.filter_by(user_id=user_id).all()
+    user = User.query.get(g.user.id)
 
     formatted_attempts = []
     for attempt in attempts:
-        attempt_date = attempt['attempt_date']
+        attempt_date = attempt.attempt_date
         formatted_date = format_date(attempt_date) if attempt_date else 'Invalid date'
-        formatted_attempt = dict(attempt)
+        formatted_attempt = dict(attempt.__dict__)
         formatted_attempt['attempt_date'] = formatted_date
         formatted_attempts.append(formatted_attempt)
 
@@ -174,37 +171,37 @@ def user_page():
     non_ranked_boulders = []
 
     for boulder in boulders:
-        user_attempt = next((attempt for attempt in attempts if attempt['boulder_id'] == boulder['id']), None)
+        user_attempt = next((attempt for attempt in attempts if attempt.boulder_id == boulder.id), None)
 
-        if not user_attempt or user_attempt['status'] == 'incomplete':
-            if boulder['difficulty'] >= 6:
+        if not user_attempt or user_attempt.status == 'incomplete':
+            if boulder.difficulty >= 6:
                 ranked_boulders.append({
-                    **boulder,
+                    **boulder.__dict__,
                     'attempt': user_attempt
                 })
             else:
                 non_ranked_boulders.append({
-                    **boulder,
+                    **boulder.__dict__,
                     'attempt': user_attempt
                 })
 
     highest_grade_climbed = max(
-        (boulder['difficulty'] for boulder in boulders
-        if any(attempt['boulder_id'] == boulder['id'] and attempt['status'] in ['completed', 'flashed']
+        (boulder.difficulty for boulder in boulders
+        if any(attempt.boulder_id == boulder.id and attempt.status in ['completed', 'flashed']
                 for attempt in attempts)),
         default=0
     )
 
     highest_grade_flashed = max(
-        (boulder['difficulty'] for boulder in boulders
-        if any(attempt['boulder_id'] == boulder['id'] and attempt['status'] == 'flashed'
+        (boulder.difficulty for boulder in boulders
+        if any(attempt.boulder_id == boulder.id and attempt.status == 'flashed'
                 for attempt in attempts)),
         default=0
     )
 
     boulders_completed = len(set(
-        attempt['boulder_id'] for attempt in attempts
-        if attempt['status'] in ['completed', 'flashed']
+        attempt.boulder_id for attempt in attempts
+        if attempt.status in ['completed', 'flashed']
     ))
 
     return render_template(
@@ -217,23 +214,18 @@ def user_page():
         user=user
     )
 
-
-
-
-
 @bp.route('/route_setter')
 @login_required
 def admin():
-    db = get_db()
-    boulders = db.execute('SELECT * FROM boulder').fetchall()
+    boulders = Boulder.query.all()
     return render_template('route_setter/admin.html', boulders=boulders)
+
 
 
 @bp.route('/<int:id>/edit_user_details', methods=('GET', 'POST'))
 @login_required
 def edit_user_details(id):
-    db = get_db()
-    user = db.execute('SELECT * FROM user WHERE id = ?', (id,)).fetchone()
+    user = User.query.get(id)
 
     if user is None:
         flash('User not found.')
@@ -241,22 +233,16 @@ def edit_user_details(id):
 
     if request.method == 'POST':
         username = request.form['username']
-        password = request.form['password']
-        confirm_password = request.form['confirm-password']
         profile_picture = request.files.get('profile_picture')
         error = None
 
-
-        existing_user = db.execute('SELECT id FROM user WHERE username = ? AND id != ?', (username, id)).fetchone()
+        existing_user = User.query.filter(User.username == username, User.id != id).first()
         if existing_user:
             error = 'Username already exists. Please choose a different one.'
-            
-        elif password and confirm_password is  password != confirm_password:
-            error = 'Passwords do not match'
 
         if error is None:
             try:
-                image_filename = user['profile_picture']
+                image_filename = user.profile_picture
                 if profile_picture and profile_picture.filename:
                     if allowed_file(profile_picture.filename):
                         image_filename = secure_filename(profile_picture.filename)
@@ -266,13 +252,12 @@ def edit_user_details(id):
                         error = 'File type not allowed.'
                         raise ValueError(error)
 
-                db.execute(
-                    "UPDATE user SET username = ?, password = ?, profile_picture = ? WHERE id = ?",
-                    (username, generate_password_hash(password), image_filename, id),
-                )
-                db.commit()
+                user.username = username
+                user.profile_picture = image_filename
+
+                db.session.commit()
                 return redirect(url_for('auth.user_page'))
-            except db.IntegrityError as e:
+            except Exception as e:
                 error = f"Unable to update user details: {e}"
             except ValueError as e:
                 flash(str(e))
@@ -280,3 +265,4 @@ def edit_user_details(id):
         flash(error)
 
     return render_template('climber/edit_user_details.html', user=user)
+

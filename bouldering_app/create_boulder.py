@@ -3,9 +3,10 @@ from flask import (
 )
 import os
 from werkzeug.utils import secure_filename
-from bouldering_app.db import get_db
 from .auth import login_required
 from datetime import datetime
+
+
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
