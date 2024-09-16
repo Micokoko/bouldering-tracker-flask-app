@@ -1,4 +1,7 @@
 from flask import Blueprint, render_template
+from bouldering_app.models import db
+from bouldering_app.models import Boulder, Attempt, User
+
 
 bp = Blueprint('leaderboards', __name__, url_prefix='/leaderboards')
 
