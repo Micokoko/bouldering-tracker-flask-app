@@ -7,7 +7,7 @@
     
     {% for boulder_id, boulder_info in boulder_rankings.items() %}
     <div class="mb-6 bg-white dark:bg-gray-900 shadow-md rounded-lg overflow-hidden">
-        <h2 class="text-xl font-semibold p-4 border-b border-gray-200 dark:border-gray-700">{{ boulder_info.name }}</h2>
+        <h2 class="text-xl font-semibold p-4 border-b border-gray-200 dark:border-gray-700">{{ boulder_info.name }} (V{{ boulder_info.difficulty }})</h2>
         <div class="mt-3 flex items-center justify-center">
         {% if boulder_info.image %}
             <img class="h-auto max-w-xs rounded-lg"  src="{{ url_for('static', filename='uploads/' + boulder_info.image) }}" alt="{{ boulder_info.name }}">

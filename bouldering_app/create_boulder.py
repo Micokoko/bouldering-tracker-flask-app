@@ -21,16 +21,9 @@ def allowed_file(filename):
 @bp.route('/add_boulder', methods=('GET', 'POST'))
 @login_required
 def create_boulder_form():
-    
-    boulder = Boulder.query.get(id)
-    
-    if g.user['username'] != 'admin':
+    if g.user.username != 'admin':
         flash("You do not have access to this page.")
         return redirect(url_for('auth.user_page'))
-    
-    if boulder is None:
-        flash('Boulder not found.')
-        return redirect(url_for('create_boulder.admin'))
 
     if request.method == 'POST':
         name = request.form['name']
@@ -55,7 +48,7 @@ def create_boulder_form():
 
         if error is None:
             try:
-                image_filename = boulder.image
+                image_filename = None 
                 if boulder_image and boulder_image.filename:
                     if allowed_file(boulder_image.filename):
                         image_filename = secure_filename(boulder_image.filename)
@@ -77,7 +70,7 @@ def create_boulder_form():
                     set_date=set_date,
                     description=description,
                     image=image_filename, 
-                    created_by=g.user['id']
+                    created_by=g.user.id
                 )
 
                 db.session.add(new_boulder)
@@ -90,6 +83,7 @@ def create_boulder_form():
         flash(error)
 
     return render_template('route_setter/add_boulder.html')
+
 
 
 
