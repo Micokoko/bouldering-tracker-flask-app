@@ -37,7 +37,6 @@ def log_ascent_user(id):
         attempts_str = request.form.get('number_of_attempts')
         moves_completed_str = request.form.get('moves_completed')
         attempt_date_str = request.form.get('attempt_date')
-        error = None
 
         try:
             number_of_attempts = int(attempts_str)

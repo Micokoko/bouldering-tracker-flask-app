@@ -63,6 +63,15 @@ def register():
                         error = 'File type not allowed.'
                         raise ValueError(error)
 
+                check_user = User.query.filter_by(username=username).first()
+                if check_user:
+                    raise ValueError("Username is already taken")
+
+                check_email = User.query.filter_by(email=email).first()
+                if check_email:
+                    raise ValueError("Email address is already in use")
+
+                    
                 new_user = User(
                     username=username,
                     password=generate_password_hash(password),

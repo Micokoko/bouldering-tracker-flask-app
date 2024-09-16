@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, Date, ForeignKey, Text, CheckConstraint
-from . import db  # Import the db instance from the same module
+from . import db 
 
 class User(db.Model):
     __tablename__ = 'user'
@@ -14,7 +14,7 @@ class User(db.Model):
     profile_picture = Column(String)
     highest_grade_climbed = Column(Integer, default=0)
     highest_grade_flased = Column(Integer, default=0)
-    # relationships
+
     boulders = db.relationship('Boulder', back_populates='creator')
     attempts = db.relationship('Attempt', back_populates='user')
 
@@ -29,7 +29,7 @@ class Boulder(db.Model):
     description = Column(Text)
     image = Column(String)
     created_by = Column(Integer, ForeignKey('user.id'), nullable=False)
-    # Relationship
+
     creator = db.relationship('User', back_populates='boulders')
     attempts = db.relationship('Attempt', back_populates='boulder')
 
@@ -43,6 +43,6 @@ class Attempt(db.Model):
     boulder_id = Column(Integer, ForeignKey('boulder.id'), nullable=False)
     moves_completed = Column(Integer)
     difficulty = Column(Integer, nullable=False)
-    # Relationships
+
     user = db.relationship('User', back_populates='attempts')
     boulder = db.relationship('Boulder', back_populates='attempts')
