@@ -10,44 +10,53 @@
     <h1 class="text-2xl font-bold mb-6">All Boulders</h1>
     <div class="mb-6 bg-white dark:bg-gray-900 shadow-md rounded-lg overflow-y-auto max-h-[75vh]">
     {% if boulders %}
-        <table class="w-full text-left text-sm text-gray-500 dark:text-gray-400 border border-gray-300 dark:border-gray-700">
+    <table class="w-full text-center text-sm text-gray-500 dark:text-gray-400 border border-gray-300 dark:border-gray-700">
         <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400 border-b border-gray-300 dark:border-gray-700">
-            <tr>
-            <th class="px-6 py-3 border-r border-gray-300 dark:border-gray-700">Set Date</th>
-            <th class="px-6 py-3 border-r border-gray-300 dark:border-gray-700">Name</th>
-            <th class="px-6 py-3 border-r border-gray-300 dark:border-gray-700">Color of holds</th>
-            <th class="px-6 py-3 border-r border-gray-300 dark:border-gray-700">Difficulty</th>
-            <th class="px-6 py-3 border-r border-gray-300 dark:border-gray-700">Number of Moves</th>
-            <th class="px-6 py-3 border-r border-gray-300 dark:border-gray-700">Description</th>
-            <th class="px-6 py-3">Edit</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for boulder in boulders %}
-            <tr class="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 border-b border-gray-300 dark:border-gray-700">
-            <td class="px-6 py-4 border-r border-gray-300 dark:border-gray-700">{{ boulder.set_date }}</td>
-            <td class="px-6 py-4 border-r border-gray-300 dark:border-gray-700">{{ boulder.name }}</td>
-            <td class="px-6 py-4 border-r border-gray-300 dark:border-gray-700">
-                <div class="card" style="background-color: {{ boulder.color }}; width: 30px; height: 30px; border-radius: 50%;"></div>
-            </td>
-            <td class="px-6 py-4 border-r border-gray-300 dark:border-gray-700">V{{ boulder.difficulty }}</td>
-            <td class="px-6 py-4 border-r border-gray-300 dark:border-gray-700">{{ boulder.numberofmoves }}</td>
-            <td class="px-6 py-4 border-r border-gray-300 dark:border-gray-700">{{ boulder.description }}</td>
-            <td class="px-6 py-4">
-                <div class="flex flex-col space-y-2">
-                    <a class="focus:outline-none text-center text-black bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-2 py-2.5 me-2 mb-2 dark:focus:ring-yellow-900" href="{{ url_for('create_boulder.update_boulder_form', id=boulder.id) }}">Update</a>
-                    <form class="focus:outline-none text-center text-black bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-2 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900" action="{{ url_for('create_boulder.delete_boulder', id=boulder.id) }}" method="post">
-                        <button class="w-full" type="submit">Delete</button>
-                    </form>
-                </div>
-            </td>            
-            </tr>
-            {% endfor %}
-        </tbody>
-        </table>
-    {% else %}
-        <p>No boulders found.</p>
-    {% endif %}
+        <tr>
+        <th class="px-6 py-3 border-r border-gray-300 dark:border-gray-700">Set Date</th>
+        <th class="px-6 py-3 border-r border-gray-300 dark:border-gray-700">Name</th>
+        <th class="px-6 py-3 border-r border-gray-300 dark:border-gray-700">Color of holds</th>
+        <th class="px-6 py-3 border-r border-gray-300 dark:border-gray-700">Difficulty</th>
+        <th class="px-6 py-3 border-r border-gray-300 dark:border-gray-700">Number of Moves</th>
+        <th class="px-6 py-3 border-r border-gray-300 dark:border-gray-700">Description</th>
+        <th class="px-6 py-3 border-r border-gray-300 dark:border-gray-700">Boulder Image</th>
+        <th class="px-6 py-3">Edit</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for boulder in boulders %}
+        <tr class="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 border-b border-gray-300 dark:border-gray-700">
+        <td class="px-6 py-4 border-r border-gray-300 dark:border-gray-700">{{ boulder.set_date }}</td>
+        <td class="px-6 py-4 border-r border-gray-300 dark:border-gray-700">{{ boulder.name }}</td>
+        <td class="px-6 py-4 border-r border-gray-300 dark:border-gray-700">
+            <div class="card mx-auto" style="background-color: {{ boulder.color }}; width: 30px; height: 30px; border-radius: 50%;"></div>
+        </td>
+        <td class="px-6 py-4 border-r border-gray-300 dark:border-gray-700">V{{ boulder.difficulty }}</td>
+        <td class="px-6 py-4 border-r border-gray-300 dark:border-gray-700">{{ boulder.numberofmoves }}</td>
+        <td class="px-6 py-4 border-r border-gray-300 dark:border-gray-700">{{ boulder.description }}</td>
+        <td class="px-6 py-4 border-r border-gray-300 dark:border-gray-700">
+            {% if boulder.image %}
+                <img class="mx-auto w-24 h-24 object-cover rounded-lg" src="{{ url_for('static', filename='uploads/' + boulder.image) }}" alt="{{ boulder.name }}">
+            {% else %}
+                <p class="text-center">No image available</p>
+            {% endif %}
+            </td>          
+        <td class="px-6 py-4">
+            <div class="flex flex-col justify-center items-center space-y-2">
+            <a class="focus:outline-none text-black bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-2 py-2.5 dark:focus:ring-yellow-900" href="{{ url_for('create_boulder.update_boulder_form', id=boulder.id) }}">Update</a>
+            <form class="focus:outline-none text-black bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-2 py-2.5 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900" action="{{ url_for('create_boulder.delete_boulder', id=boulder.id) }}" method="post">
+                <button class="w-full" type="submit">Delete</button>
+            </form>
+            </div>
+        </td>            
+        </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+    
+{% else %}
+    <p>No boulders found.</p>
+{% endif %}
 
 </div>
     <a href="{{ url_for('create_boulder.create_boulder_form') }}" class="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">ADD BOULDER</a>
