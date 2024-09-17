@@ -1,15 +1,15 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<section class="mt-5 mb-16 pb-40 w-full px-3">
-    <h1 class="text-3xl font-bold mb-6">Completed Boulders</h1>
+<section class="w-full px-5 mt-3 mb-20">
+    <h1 class="mb-6 text-3xl font-bold">Completed Boulders</h1>
     {% if archived_boulders %}
         {% for boulder in archived_boulders %}
-            <div class="flex flex-col border dark:border-gray-700 rounded-lg overflow-hidden shadow dark:bg-gray-800 w-full h-auto mb-4 mx-auto">
+            <div class="flex flex-col w-full h-auto mx-auto mb-4 overflow-hidden border rounded-lg shadow dark:border-gray-700 dark:bg-gray-800">
                 <h5 class="p-4 mb-2 text-xl font-bold tracking-tight text-gray-900 dark:text-white">{{ boulder.name }} (V{{ boulder.difficulty }})</h5>
-                <p class="px-4 mb-1 font-normal line-clamp-3 text-gray-700 dark:text-gray-400">Description: {{ boulder.description }}</p>
+                <p class="px-4 mb-1 font-normal text-gray-700 line-clamp-3 dark:text-gray-400">Description: {{ boulder.description }}</p>
                 
-                <div class="flex flex-col justify-between pl-4 leading-normal w-full">
+                <div class="flex flex-col justify-between w-full pl-4 leading-normal">
                 <p class="mb-1 font-normal text-gray-700 dark:text-gray-400">
                     Color of holds:
                     <div style="background-color: {{ boulder.color }}; width: 25px; height: 25px; border-radius: 50%;"></div>
@@ -25,71 +25,69 @@
                     {% endif %}
                 {% endfor %}
 
-                <div class="flex flex-col mt-4 px-2 py-2">
+                <div class="flex flex-col px-3 py-2 mt-4">
                     <!-- Header Row -->
-                    <div class="flex justify-between text-left font-semibold text-gray-700 dark:text-gray-300">
-                        <div class="w-1/4 text-sm font-thin">Moves</div>
-                        <div class="w-1/4 text-sm font-thin mr-6">Status</div>
+                    <div class="flex flex-wrap justify-between mb-2 font-semibold text-left text-gray-700 dark:text-gray-300">
+                        <div class="w-1/6 text-sm font-thin">Moves</div>
+                        <div class="w-1/4 text-sm font-thin">Attempts made</div>
                         <div class="w-1/4 text-sm font-thin">Date</div>
                         <div class="w-1/4 text-sm font-thin">Achievements</div>
                     </div>
                     
                     <!-- Data Row -->
-                    <div class="flex justify-between text-left text-gray-900 dark:text-white">
+                    <div class="flex flex-wrap items-start justify-between text-left text-gray-900 dark:text-white">
                         <!-- Column 1: Number of Moves Completed -->
-                        <div class="w-1/4">
+                        <div class="flex flex-col w-1/6 mb-2">
                             {% if attempts_for_boulder %}
                                 {% set attempt = attempts_for_boulder[0] %}
-                                <p class="text-xl">{{ attempt.moves_completed }} / {{ boulder.numberofmoves }}</p>
+                                <p class="text-lg font-bold">{{ attempt.moves_completed }} / {{ boulder.numberofmoves }}</p>
                             {% else %}
-                                <p class="text-xl">No ascent logged</p>
+                                <p class="text-lg font-semibold">No ascent logged</p>
                             {% endif %}
                         </div>
                     
                         <!-- Column 2: Status -->
-                        <div class="w-1/4 mr-6">
+                        <div class="flex flex-col w-1/4 mb-2 items-left">
                             {% if attempts_for_boulder %}
                                 {% set attempt = attempts_for_boulder[0] %}
-                                <p class="text-xl">
+                                <p class="text-lg font-bold break-words">
                                     {% if attempt.status == 'flashed' %}
                                         Flashed
                                     {% elif attempt.status == 'completed' %}
-                                        Completed {{ attempt.number_of_attempts }} attempts
+                                        {{ attempt.number_of_attempts }}
                                     {% elif attempt.status == 'incomplete' %}
                                         Incomplete ({{ attempt.moves_completed }} / {{ boulder.numberofmoves }} moves)
                                     {% endif %}
                                 </p>
                             {% else %}
-                                <p class="text-xl">No log</p>
+                                <p class="text-lg font-semibold">No log</p>
                             {% endif %}
                         </div>
                     
                         <!-- Column 3: Attempt Date -->
-                        <div class="w-1/4">
+                        <div class="flex flex-col w-1/4 mb-2">
                             {% if attempts_for_boulder %}
                                 {% set attempt = attempts_for_boulder[0] %}
-                                <p class="text-xl">{{ attempt.attempt_date }}</p>
+                                <p class="text-base font-bold break-words">{{ attempt.attempt_date }}</p>
                             {% else %}
-                                <p class="text-xl">No date logged</p>
+                                <p class="text-lg font-bold">No date logged</p>
                             {% endif %}
                         </div>
-
+                    
                         <!-- Column 4: Achievements -->
-                        <div class="w-1/4">
+                        <div class="flex flex-col items-center w-1/4 mb-2">
                             {% if attempts_for_boulder %}
                                 {% set attempt = attempts_for_boulder[0] %}
-                                <p class="text-xl">
+                                <p class="flex items-center justify-center text-sm font-bold">
                                     {% if attempt.status == 'flashed' %}
-                                    <img src="{{ url_for('static', filename='images/gold-medal-svgrepo-com.svg') }}" alt="Gold Medal" class="w-8 h-8">
+                                        <img src="{{ url_for('static', filename='images/gold-medal-svgrepo-com.svg') }}" alt="Gold Medal" class="w-8 h-8">
                                     {% elif attempt.status == 'completed' %}
-                                        
                                         {% if attempt.number_of_attempts >= 2 and attempt.number_of_attempts < 5 %}
-                                        <img src="{{ url_for('static', filename='images/silver-medal-svgrepo-com.svg') }}" alt="Silver Medal" class="w-8 h-8">
-                                        
+                                            <img src="{{ url_for('static', filename='images/silver-medal-svgrepo-com.svg') }}" alt="Silver Medal" class="w-8 h-8">
                                         {% elif attempt.number_of_attempts >= 5 and attempt.number_of_attempts < 8 %}
-                                        <img src="{{ url_for('static', filename='images/bronze-medal-svgrepo-com.svg') }}" alt="Bronze Medal" class="w-8 h-8">
+                                            <img src="{{ url_for('static', filename='images/bronze-medal-svgrepo-com.svg') }}" alt="Bronze Medal" class="w-8 h-8">
                                         {% else %}
-                                        No awards for this ascent
+                                            No awards
                                         {% endif %}
                                     {% endif %}
                                 </p>
@@ -99,16 +97,20 @@
                         </div>
                     </div>
                 </div>
-                <div class="flex justify-center items-center">
+                
+                
+                
+                
+                <div class="flex items-center justify-center">
                     {% if boulder.image %}
-                    <img class="w-full max-h-72 object-cover pt-4" src="{{ url_for('static', filename='uploads/' + boulder.image) }}" alt="{{ boulder.name }}">
+                    <img class="object-cover w-full pt-4 max-h-72" src="{{ url_for('static', filename='uploads/' + boulder.image) }}" alt="{{ boulder.name }}">
                     {% else %}
-                    <img class="w-full max-h-72 object-cover pt-4" src="{{ url_for('static', filename='images/spray-wall.jpg') }}" alt="Spray Wall">
+                    <img class="object-cover w-full pt-4 max-h-72" src="{{ url_for('static', filename='images/spray-wall.jpg') }}" alt="Spray Wall">
                     {% endif %}
                 </div>
     
 
-                <p class="text-center mt-5 mb-5">
+                <p class="mt-5 mb-5 text-center">
                     <a class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center" href="{{ url_for('log_ascent.log_ascent_user', id=boulder.id) }}">Edit Log</a>
                 </p>
             </div>
@@ -127,7 +129,7 @@
                 </svg>
                 <span class="text-sm text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-500">Home</span>
             </a>
-            <a href="{{ url_for('log_ascent.archive') }}" class="inline-flex flex-col items-center justify-center px-5 border-gray-200 border-x bg-gray-800 group dark:border-gray-600">
+            <a href="{{ url_for('log_ascent.archive') }}" class="inline-flex flex-col items-center justify-center px-5 bg-gray-800 border-gray-200 border-x group dark:border-gray-600">
                 <svg class="w-5 h-5 mb-2 text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M11.074 4 8.442.408A.95.95 0 0 0 7.014.254L2.926 4h8.148ZM9 13v-1a4 4 0 0 1 4-4h6V6a1 1 0 0 0-1-1H1a1 1 0 0 0-1 1v13a1 1 0 0 0 1 1h17a1 1 0 0 0 1-1v-2h-6a4 4 0 0 1-4-4Z"/>
                     <path d="M19 10h-6a2 2 0 0 0-2 2v1a2 2 0 0 0 2 2h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1Zm-4.5 3.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2ZM12.62 4h2.78L12.539.41a1.086 1.086 0 1 0-1.7 1.352L12.62 4Z"/>
