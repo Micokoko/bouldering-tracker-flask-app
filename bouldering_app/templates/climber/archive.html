@@ -7,15 +7,17 @@
         {% for boulder in archived_boulders %}
             <div class="flex flex-col w-full h-auto mx-auto mb-4 overflow-hidden border rounded-lg shadow dark:border-gray-700 dark:bg-gray-800">
                 <h5 class="p-4 mb-2 text-xl font-bold tracking-tight text-gray-900 dark:text-white">{{ boulder.name }} (V{{ boulder.difficulty }})</h5>
-                <p class="px-4 mb-1 font-normal text-gray-700 line-clamp-3 dark:text-gray-400">Description: {{ boulder.description }}</p>
-                
+                <p class="pl-4 font-normal text-gray-700 dark:text-gray-400">Number of moves: {{ boulder.numberofmoves }}</p>
+
                 <div class="flex flex-col justify-between w-full pl-4 leading-normal">
-                <p class="mb-1 font-normal text-gray-700 dark:text-gray-400">
-                    Color of holds:
-                    <div style="background-color: {{ boulder.color }}; width: 25px; height: 25px; border-radius: 50%;"></div>
-                </p>
-                <p class="mb-1 font-normal text-gray-700 dark:text-gray-400">Number of moves: {{ boulder.numberofmoves }}</p>
+                    <p class="mb-1 font-normal text-gray-700 dark:text-gray-400">
+                        Color of holds:
+                        <div style="background-color: {{ boulder.color }}; width: 25px; height: 25px; border-radius: 50%;"></div>
+                    </p>
                 </div>
+                
+                <p class="px-4 font-normal text-gray-700 line-clamp-3 dark:text-gray-400">Description: {{ boulder.description }}</p>
+    
 
 
                 {% set attempts_for_boulder = [] %}
@@ -42,7 +44,7 @@
                                 {% set attempt = attempts_for_boulder[0] %}
                                 <p class="text-lg font-bold">{{ attempt.moves_completed }} / {{ boulder.numberofmoves }}</p>
                             {% else %}
-                                <p class="text-lg font-semibold">No ascent logged</p>
+                                <p class="text-lg font-semibold">N/A</p>
                             {% endif %}
                         </div>
                     
@@ -50,7 +52,7 @@
                         <div class="flex flex-col w-1/4 mb-2 items-left">
                             {% if attempts_for_boulder %}
                                 {% set attempt = attempts_for_boulder[0] %}
-                                <p class="text-lg font-bold break-words">
+                                <p class="text-lg font-bold text-center break-words">
                                     {% if attempt.status == 'flashed' %}
                                         Flashed
                                     {% elif attempt.status == 'completed' %}
@@ -60,7 +62,7 @@
                                     {% endif %}
                                 </p>
                             {% else %}
-                                <p class="text-lg font-semibold">No log</p>
+                                <p class="text-lg font-semibold">N/A</p>
                             {% endif %}
                         </div>
                     
@@ -70,7 +72,7 @@
                                 {% set attempt = attempts_for_boulder[0] %}
                                 <p class="text-base font-bold break-words">{{ attempt.attempt_date }}</p>
                             {% else %}
-                                <p class="text-lg font-bold">No date logged</p>
+                                <p class="text-lg font-bold">N/A</p>
                             {% endif %}
                         </div>
                     
