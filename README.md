@@ -1,4 +1,3 @@
-Here's an updated version of the `README.md` with more details about the authentication process based on the code provided:
 
 ---
 
